@@ -8,4 +8,5 @@ steps:
         email_address: salesloft@sample.com
         last_name: Reykjavik
 - step: the email_address field on salesloft person salesloft@sample.com should be salesloft@sample.com
+- step: the last_name field on salesloft person salesloft@sample.com should be Reykjavik
 - step: delete the salesloft@sample.com salesloft person
