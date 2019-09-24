@@ -27,7 +27,7 @@ describe('PersonFieldEquals', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('PersonFieldEqualsStep');
       expect(stepDef.getName()).to.equal('Check a field on a SalesLoft Person');
-      expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_-]+) field on salesloft contact (?<email>.+) should be (?<expectation>.+)');
+      expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should be (?<expectation>.+)');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
     });
 
