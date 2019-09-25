@@ -1,5 +1,7 @@
 # Salesloft Cog
 
+[![CircleCI](https://circleci.com/gh/run-crank/cog-salesloft/tree/master.svg?style=svg)](https://circleci.com/gh/run-crank/cog-salesloft/tree/master)
+
 This is a [Crank][what-is-crank] Cog for Salesloft, providing
 steps and assertions for you to validate the state and behavior of your
 Salesloft instance.
@@ -27,7 +29,7 @@ Note: You can always re-authenticate later.
 <!-- authenticationDetails -->
 You will be asked for the following authentication details on installation.
 
-- **userAgent**: User Agent String
+- **apiKey**: API Key
 
 ```shell-session
 # Re-authenticate by running this
@@ -41,7 +43,28 @@ Scenario files.
 
 <!-- run `crank cog:readme automatoninc/salesloft` to update -->
 <!-- stepDetails -->
-This Cog does not have any steps defined yet!
+<h4 id="CreateOrUpdatePersonStep">Create or update a SalesLoft person</h4>
+
+- **Expression**: `create or update a salesloft person`
+- **Expected Data**:
+  - `person`: A map of field names to field values
+- **Step ID**: `CreateOrUpdatePersonStep`
+
+<h4 id="DeletePersonStep">Delete a SalesLoft person</h4>
+
+- **Expression**: `delete the (?<email>.+) salesloft person`
+- **Expected Data**:
+  - `email`: The person's email to be deleted
+- **Step ID**: `DeletePersonStep`
+
+<h4 id="PersonFieldEqualsStep">Check a field on a SalesLoft Person</h4>
+
+- **Expression**: `the (?<field>[a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should be (?<expectation>.+)`
+- **Expected Data**:
+  - `email`: Person's email address
+  - `field`: Field name to check
+  - `expectation`: Expected field value
+- **Step ID**: `PersonFieldEqualsStep`
 <!-- stepDetailsEnd -->
 
 ## Development and Contributing
