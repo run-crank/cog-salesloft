@@ -18,7 +18,7 @@ describe('PersonFieldEquals', () => {
   beforeEach(() => {
     protoStep = new ProtoStep();
     clientWrapperStub = sinon.stub();
-    clientWrapperStub.getPersonByEmail = sinon.stub();
+    clientWrapperStub.findPersonByEmail = sinon.stub();
     stepUnderTest = new Step(clientWrapperStub);
   });
 
@@ -52,73 +52,72 @@ describe('PersonFieldEquals', () => {
   });
 
   describe('ExecuteStep', () => {
-    describe('Expected Parameters', () => {
-      it('should call getPersonByEmail with expected email', async () => {
-        const expectedEmail: string = 'salesloft@test.com';
-        protoStep.setData(Struct.fromJavaScript({
-          email: expectedEmail,
-          expectation: 'doe',
-          field: 'lastname',
-        }));
-
-        await stepUnderTest.executeStep(protoStep);
-        expect(clientWrapperStub.getPersonByEmail).to.have.been.calledWith(expectedEmail);
-      });
-    });
-
-    describe('Person expected field value equals expectation', () => {
-      beforeEach(() => {
-        const expectedEmail: string = 'salesloft@test.com';
-        const expectedLastname: string = 'doe';
-        protoStep.setData(Struct.fromJavaScript({
-          email: expectedEmail,
-          expectation: expectedLastname,
-          field: 'last_name',
-        }));
-        clientWrapperStub.getPersonByEmail.returns(Promise.resolve({
-          email_address: expectedEmail,
-          last_name: expectedLastname,
-        }));
-      });
-
-      it('should respond with pass', async () => {
-        const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-        expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
-      });
-    });
-
-    describe('Person expected field value not equal expectation', () => {
-      beforeEach(() => {
-        const expectedEmail: string = 'salesloft@test.com';
-        const expectedLastname: string = 'doe';
-        protoStep.setData(Struct.fromJavaScript({
-          email: expectedEmail,
-          expectation: 'wrong expectation',
-          field: 'last_name',
-        }));
-        clientWrapperStub.getPersonByEmail.returns(Promise.resolve({
-          email_address: expectedEmail,
-          last_name: expectedLastname,
-        }));
-      });
-
-      it('should respond with fail', async () => {
-        const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-        expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
-      });
-    });
-
-    describe('Error occurred', () => {
+    describe('Person not found', () => {
       beforeEach(() => {
         protoStep.setData(Struct.fromJavaScript({
           email: 'salesloft@test.com',
+          field: 'email_address',
+          expectation: 'salesloft@test.com',
         }));
-        clientWrapperStub.getPersonByEmail.throws('error');
+        clientWrapperStub.findPersonByEmail.returns(Promise.resolve([]));
       });
 
       it('should respond with error', async () => {
-        const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+        const response = await stepUnderTest.executeStep(protoStep);
         expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+      });
+    });
+
+    describe('Person found', () => {
+      describe('Expectation equals Actual', () => {
+        const foundPerson = {
+          id: 1,
+          email_address: 'salesloft@test.com',
+        };
+        beforeEach(() => {
+          protoStep.setData(Struct.fromJavaScript({
+            email: 'salesloft@test.com',
+            field: 'email_address',
+            expectation: 'salesloft@test.com',
+          }));
+          clientWrapperStub.findPersonByEmail.returns(Promise.resolve([foundPerson]));
+        });
+
+        it('should respond with pass', async () => {
+          const response = await stepUnderTest.executeStep(protoStep);
+          expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+        });
+      });
+
+      describe('Expectation not equals Actual', () => {
+        const foundPerson = {
+          id: 1,
+          email_address: 'salesloft@test.com',
+        };
+        beforeEach(() => {
+          protoStep.setData(Struct.fromJavaScript({
+            email: 'salesloft@test.com',
+            field: 'email_address',
+            expectation: 'wrong expectation',
+          }));
+          clientWrapperStub.findPersonByEmail.returns(Promise.resolve([foundPerson]));
+        });
+
+        it('should respond with failed', async () => {
+          const response = await stepUnderTest.executeStep(protoStep);
+          expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
+        });
+      });
+
+      describe('Erorr', () => {
+        beforeEach(() => {
+          clientWrapperStub.findPersonByEmail.throws();
+        });
+
+        it('should respond with error', async () => {
+          const response = await stepUnderTest.executeStep(protoStep);
+          expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+        });
       });
     });
   });

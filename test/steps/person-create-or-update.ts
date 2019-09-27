@@ -9,7 +9,7 @@ import { Step } from '../../src/steps/person-create-or-update';
 
 chai.use(sinonChai);
 
-describe('CreateOrUpdateContactStep', () => {
+describe('CreateOrUpdatePersonStep', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
@@ -18,7 +18,9 @@ describe('CreateOrUpdateContactStep', () => {
   beforeEach(() => {
     protoStep = new ProtoStep();
     clientWrapperStub = sinon.stub();
-    clientWrapperStub.createOrUpdatePerson = sinon.stub();
+    clientWrapperStub.findPersonByEmail = sinon.stub();
+    clientWrapperStub.createPerson = sinon.spy();
+    clientWrapperStub.updatePerson = sinon.spy();
     stepUnderTest = new Step(clientWrapperStub);
   });
 
@@ -45,7 +47,7 @@ describe('CreateOrUpdateContactStep', () => {
 
   describe('ExecuteStep', () => {
     describe('Expected Parameters', () => {
-      it('should call createOrUpdatePerson with expected person', async () => {
+      it('should call findPersonByEmail with expected person', async () => {
         const expectedEmail: string = 'salesloft@test.com';
         const person = {
           email_address: expectedEmail,
@@ -55,50 +57,53 @@ describe('CreateOrUpdateContactStep', () => {
         }));
 
         await stepUnderTest.executeStep(protoStep);
-        expect(clientWrapperStub.createOrUpdatePerson).to.have.been.calledWith(
-            person);
+        expect(clientWrapperStub.findPersonByEmail).to.have.been.calledWith(expectedEmail);
       });
     });
 
-    describe('Person successfully created or updated', () => {
+    describe('Non-existing Person', () => {
+      const expectedParameters = {
+        email_address: 'salesloft@test.com',
+      };
       beforeEach(() => {
         protoStep.setData(Struct.fromJavaScript({
-          person:  { email_address: 'salesloft@test.com' },
+          person: expectedParameters,
         }));
-        clientWrapperStub.createOrUpdatePerson.returns(Promise.resolve({ id: 123456 }));
+        clientWrapperStub.findPersonByEmail.returns(Promise.resolve([]));
       });
 
       it('should respond with pass', async () => {
         const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
         expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
       });
-    });
 
-    describe('Contact not created nor updated', () => {
-      beforeEach(() => {
-        protoStep.setData(Struct.fromJavaScript({
-          person:  { email_address: 'salesloft@test.com' },
-        }));
-        clientWrapperStub.createOrUpdatePerson.returns(Promise.resolve(undefined));
-      });
-
-      it('should respond with fail', async () => {
-        const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-        expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
+      it('should call createPerson with expected parameters', async () => {
+        await stepUnderTest.executeStep(protoStep);
+        expect(clientWrapperStub.createPerson).to.have.been.calledWith(expectedParameters);
       });
     });
 
-    describe('Error occurred', () => {
+    describe('Existing Person', () => {
+      const expectedParameters = {
+        email_address: 'salesloft@test.com',
+        id: 1,
+      };
       beforeEach(() => {
         protoStep.setData(Struct.fromJavaScript({
-          person:  { email_address: 'salesloft@test.com' },
+          person: expectedParameters,
         }));
-        clientWrapperStub.createOrUpdatePerson.returns(Promise.reject('Error'));
+        clientWrapperStub.findPersonByEmail.returns(Promise.resolve([expectedParameters]));
       });
 
-      it('should respond with error', async () => {
+      it('should respond with pass', async () => {
         const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-        expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+        expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+      });
+
+      it('should call updatePerson with expected parameters', async () => {
+        await stepUnderTest.executeStep(protoStep);
+        expect(clientWrapperStub.updatePerson).to.have.been.calledWith(
+          expectedParameters['id'], expectedParameters);
       });
     });
   });

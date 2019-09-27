@@ -30,10 +30,16 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
     const field = stepData.field;
 
     try {
-      const contact = await this.client.getPersonByEmail(email);
+      const person = (await this.client.findPersonByEmail(email))[0];
+
+      if (!person) {
+        return this.error('Person %s not found.', [
+          email,
+        ]);
+      }
 
       // tslint:disable-next-line:triple-equals
-      if (contact[field] == expectation) {
+      if (person[field] == expectation) {
         return this.pass('The %s field was %s, as expected.', [
           field,
           expectation,
@@ -42,11 +48,11 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
         return this.fail('Expected %s to be %s, but it was actually %s.', [
           field,
           expectation,
-          contact[field],
+          person[field],
         ]);
       }
     } catch (e) {
-      return this.error('There was an error loading contacts from Hubspot: %s', [e.toString()]);
+      return this.error('There was an error loading contacts from SalesLoft: %s.', [e.toString()]);
     }
   }
 

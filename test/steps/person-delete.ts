@@ -18,7 +18,8 @@ describe('DeletePersonStep', () => {
   beforeEach(() => {
     protoStep = new ProtoStep();
     clientWrapperStub = sinon.stub();
-    clientWrapperStub.deletePersonByEmail = sinon.stub();
+    clientWrapperStub.findPersonByEmail = sinon.stub();
+    clientWrapperStub.deletePerson = sinon.spy();
     stepUnderTest = new Step(clientWrapperStub);
   });
 
@@ -44,45 +45,49 @@ describe('DeletePersonStep', () => {
   });
 
   describe('ExecuteStep', () => {
-    describe('Expected Parameters', () => {
-      it('should call deletePersonByEmail with expected email', async () => {
-        const expectedEmail: string = 'salesloft@test.com';
-        protoStep.setData(Struct.fromJavaScript({
-          email: expectedEmail,
-        }));
+    beforeEach(() => {
+      protoStep.setData(Struct.fromJavaScript({
+        email: 'salesloft@test.com',
+      }));
+    });
+    describe('Person not found', () => {
+      beforeEach(() => {
+        clientWrapperStub.findPersonByEmail.returns(Promise.resolve([]));
+      });
 
-        await stepUnderTest.executeStep(protoStep);
-        expect(clientWrapperStub.deletePersonByEmail).to.have.been.calledWith(expectedEmail);
+      it('should return error', async () => {
+        const response = await stepUnderTest.executeStep(protoStep);
+        expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
       });
     });
 
-    describe('Contact successfully deleted', () => {
+    describe('Person found', () => {
+      const foundPerson = {
+        id: 1,
+        email_address: 'salesloft@test.com',
+      };
       beforeEach(() => {
-        protoStep.setData(Struct.fromJavaScript({
-          email: 'salesloft@test.com',
-        }));
-        clientWrapperStub.deletePersonByEmail.returns(Promise.resolve({
-          deleted: true,
-          reason: 'OK',
-        }));
+        clientWrapperStub.findPersonByEmail.returns(Promise.resolve([foundPerson]));
+      });
+
+      it('should call deletePerson with expectedParameters', async () => {
+        await stepUnderTest.executeStep(protoStep);
+        expect(clientWrapperStub.deletePerson).to.have.been.calledWith(foundPerson['id']);
       });
 
       it('should respond with pass', async () => {
-        const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+        const response = await stepUnderTest.executeStep(protoStep);
         expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
       });
     });
 
-    describe('Error occurred', () => {
+    describe('Error', () => {
       beforeEach(() => {
-        protoStep.setData(Struct.fromJavaScript({
-          email: 'salesloft@test.com',
-        }));
-        clientWrapperStub.deletePersonByEmail.returns(Promise.reject('Error'));
+        clientWrapperStub.findPersonByEmail.throws();
       });
 
       it('should respond with error', async () => {
-        const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+        const response = await stepUnderTest.executeStep(protoStep);
         expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
       });
     });

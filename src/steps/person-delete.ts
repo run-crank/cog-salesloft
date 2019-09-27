@@ -20,12 +20,20 @@ export class DeletePersonStep extends BaseStep implements StepInterface {
     const email: Object = stepData.email;
 
     try {
-      await this.client.deletePersonByEmail(email);
-      return this.pass('Successfully deleted SalesLoft person %s', [
+      const person = (await this.client.findPersonByEmail(email))[0];
+
+      if (!person) {
+        return this.error('Person %s not found', [
+          email,
+        ]);
+      }
+
+      await this.client.deletePerson(person['id']);
+      return this.pass('Successfully deleted SalesLoft person %s.', [
         email,
       ]);
     } catch (e) {
-      return this.error('There was an error deleting the person in SalesLoft: %s', [
+      return this.error('There was an error deleting the person in SalesLoft: %s.', [
         e.toString(),
       ]);
     }
