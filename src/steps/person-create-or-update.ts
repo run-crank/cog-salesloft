@@ -20,16 +20,19 @@ export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface 
     const person: Object = stepData.person;
 
     try {
-      const data = await this.client.createOrUpdatePerson(person);
-      if (data && data.id) {
-        return this.pass('Successfully created or updated SalesLoft person %s', [
-          person['email_address'],
-        ]);
+      const existingPerson = (await this.client.findPersonByEmail(person['email_address']))[0];
+
+      if (!existingPerson) {
+        await this.client.createPerson(person);
       } else {
-        return this.fail('Unable to create or update SalesLoft person');
+        await this.client.updatePerson(existingPerson['id'], person);
       }
+
+      return this.pass('Successfully created or updated SalesLoft person %s.', [
+        person['email_address'],
+      ]);
     } catch (e) {
-      return this.error('There was an error creating or updating the person in SalesLoft: %s', [
+      return this.error('There was an error creating or updating the person in SalesLoft: %s.', [
         e.toString(),
       ]);
     }
