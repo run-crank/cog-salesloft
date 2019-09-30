@@ -52,7 +52,7 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
         ]);
       }
     } catch (e) {
-      return this.error('There was an error loading contacts from SalesLoft: %s.', [e.toString()]);
+      return this.error('There was an error loading the person from SalesLoft: %s', [e.toString()]);
     }
   }
 

@@ -6,8 +6,8 @@
   "cog": {
     "name": "automatoninc/salesloft",
     "label": "Salesloft",
-    "homepage": "",
-    "authHelpUrl": ""
+    "homepage": "https://github.com/run-crank/cog-salesloft",
+    "authHelpUrl": "https://developers.salesloft.com/api.html#!/Topic/apikey"
   },
   "scripts": {
     "build-docker": "docker build -t automatoninc/salesloft:$npm_package_version -t automatoninc/salesloft:latest .",
