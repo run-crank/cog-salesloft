@@ -38,8 +38,16 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
         ]);
       }
 
+      let actual = person[field];
+
+      if (!actual) {
+        if (person['custom_fields']) {
+          actual = person['custom_fields'][field];
+        }
+      }
+
       // tslint:disable-next-line:triple-equals
-      if (person[field] == expectation) {
+      if (actual == expectation) {
         return this.pass('The %s field was %s, as expected.', [
           field,
           expectation,
