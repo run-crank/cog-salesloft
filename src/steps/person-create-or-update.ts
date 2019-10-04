@@ -13,11 +13,19 @@ export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface 
     field: 'person',
     type: FieldDefinition.Type.MAP,
     description: 'A map of field names to field values',
+  }, {
+    field: 'customFields',
+    type: FieldDefinition.Type.MAP,
+    description: 'A map of custom field names to field values',
   }];
 
   async executeStep(step: Step) {
     const stepData: any = step.getData().toJavaScript();
-    const person: Object = stepData.person;
+    let person: Object = stepData.person;
+
+    if (stepData.customFields) {
+      person = Object.assign(person, { custom_fields: stepData.customFields });
+    }
 
     try {
       const existingPerson = (await this.client.findPersonByEmail(person['email_address']))[0];
