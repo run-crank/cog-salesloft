@@ -69,10 +69,37 @@ describe('PersonFieldEquals', () => {
     });
 
     describe('Person found', () => {
+      describe('Custom fields', () => {
+        const foundPerson = {
+          id: 1,
+          email_address: 'salesloft@test.com',
+          custom_fields: {
+            MyCustomField: 'custom data',
+          },
+        };
+
+        beforeEach(() => {
+          protoStep.setData(Struct.fromJavaScript({
+            email: 'salesloft@test.com',
+            field: 'MyCustomField',
+            expectation: 'custom data',
+          }));
+          clientWrapperStub.findPersonByEmail.returns(Promise.resolve([foundPerson]));
+        });
+
+        it('should evaluate custom_fields properly', async () => {
+          const response = await stepUnderTest.executeStep(protoStep);
+          expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+        });
+      });
+
       describe('Expectation equals Actual', () => {
         const foundPerson = {
           id: 1,
           email_address: 'salesloft@test.com',
+          custom_fields: {
+            MyCustomField: 'custom data',
+          },
         };
         beforeEach(() => {
           protoStep.setData(Struct.fromJavaScript({
@@ -93,6 +120,9 @@ describe('PersonFieldEquals', () => {
         const foundPerson = {
           id: 1,
           email_address: 'salesloft@test.com',
+          custom_fields: {
+            MyCustomField: 'custom data',
+          },
         };
         beforeEach(() => {
           protoStep.setData(Struct.fromJavaScript({
