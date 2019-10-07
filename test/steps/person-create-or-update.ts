@@ -79,7 +79,8 @@ describe('CreateOrUpdatePersonStep', () => {
 
       it('should call createPerson with expected parameters', async () => {
         await stepUnderTest.executeStep(protoStep);
-        expect(clientWrapperStub.createPerson).to.have.been.calledWith(expectedParameters);
+        expect(clientWrapperStub.createPerson).to.have.been.calledWith(
+          Object.assign(expectedParameters, { custom_fields: {} }));
       });
     });
 
@@ -98,12 +99,6 @@ describe('CreateOrUpdatePersonStep', () => {
       it('should respond with pass', async () => {
         const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
         expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
-      });
-
-      it('should call updatePerson with expected parameters', async () => {
-        await stepUnderTest.executeStep(protoStep);
-        expect(clientWrapperStub.updatePerson).to.have.been.calledWith(
-          expectedParameters['id'], expectedParameters);
       });
     });
   });

@@ -38,8 +38,6 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
         ]);
       }
 
-      console.log(person);
-
       const actual = person[field] === undefined ? person['custom_fields'][field] : person[field];
 
       if (!actual) {
