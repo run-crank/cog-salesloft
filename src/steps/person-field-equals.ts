@@ -38,12 +38,14 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
         ]);
       }
 
-      let actual = person[field];
+      console.log(person);
+
+      const actual = person[field] === undefined ? person['custom_fields'][field] : person[field];
 
       if (!actual) {
-        if (person['custom_fields']) {
-          actual = person['custom_fields'][field];
-        }
+        return this.fail('The %s field was not found', [
+          field,
+        ]);
       }
 
       // tslint:disable-next-line:triple-equals

@@ -6,7 +6,6 @@ steps:
   data:
     person:
         email_address: customfieldssalesloft@sample.com
-    customFields:
         NicksTest123: This is Custom
 - step: the email_address field on salesloft person customfieldssalesloft@sample.com should be customfieldssalesloft@sample.com
 - step: the NicksTest123 field on salesloft person customfieldssalesloft@sample.com should be This is Custom
