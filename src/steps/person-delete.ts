@@ -12,7 +12,7 @@ export class DeletePersonStep extends BaseStep implements StepInterface {
   protected expectedFields: Field[] = [{
     field: 'email',
     type: FieldDefinition.Type.EMAIL,
-    description: 'The person\'s email to be deleted',
+    description: 'Person\'s email address',
   }];
 
   async executeStep(step: Step) {
