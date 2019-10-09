@@ -54,7 +54,7 @@ Scenario files.
 
 - **Expression**: `delete the (?<email>.+) salesloft person`
 - **Expected Data**:
-  - `email`: The person's email to be deleted
+  - `email`: Person's email address
 - **Step ID**: `DeletePersonStep`
 
 <h4 id="PersonFieldEqualsStep">Check a field on a SalesLoft Person</h4>
