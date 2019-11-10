@@ -27,9 +27,11 @@ Note: You can always re-authenticate later.
 ### Authentication
 <!-- run `crank cog:readme automatoninc/salesloft` to update -->
 <!-- authenticationDetails -->
-You will be asked for the following authentication details on installation.
+You will be asked for the following authentication details on installation. To avoid prompts in a CI/CD context, you can provide the same details as environment variables.
 
-- **apiKey**: API Key
+| Field | Install-Time Environment Variable | Description |
+| --- | --- | --- |
+| **apiKey** | `CRANK_AUTOMATONINC_SALESLOFT__APIKEY` | API Key |
 
 ```shell-session
 # Re-authenticate by running this
@@ -43,28 +45,11 @@ Scenario files.
 
 <!-- run `crank cog:readme automatoninc/salesloft` to update -->
 <!-- stepDetails -->
-<h4 id="CreateOrUpdatePersonStep">Create or update a SalesLoft person</h4>
-
-- **Expression**: `create or update a salesloft person`
-- **Expected Data**:
-  - `person`: A map of field names to field values
-- **Step ID**: `CreateOrUpdatePersonStep`
-
-<h4 id="DeletePersonStep">Delete a SalesLoft person</h4>
-
-- **Expression**: `delete the (?<email>.+) salesloft person`
-- **Expected Data**:
-  - `email`: Person's email address
-- **Step ID**: `DeletePersonStep`
-
-<h4 id="PersonFieldEqualsStep">Check a field on a SalesLoft Person</h4>
-
-- **Expression**: `the (?<field>[a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should be (?<expectation>.+)`
-- **Expected Data**:
-  - `email`: Person's email address
-  - `field`: Field name to check
-  - `expectation`: Expected field value
-- **Step ID**: `PersonFieldEqualsStep`
+| Name (ID) | Expression | Expected Data |
+| --- | --- | --- |
+| **Create or update a SalesLoft person**<br>(`CreateOrUpdatePersonStep`) | `create or update a salesloft person` | - `person`: A map of field names to field values |
+| **Delete a SalesLoft person**<br>(`DeletePersonStep`) | `delete the (?<email>.+) salesloft person` | - `email`: Person's email address |
+| **Check a field on a SalesLoft Person**<br>(`PersonFieldEqualsStep`) | `the (?<field>[a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should be (?<expectation>.+)` | - `email`: Person's email address <br><br>- `field`: Field name to check <br><br>- `expectation`: Expected field value |
 <!-- stepDetailsEnd -->
 
 ## Development and Contributing
