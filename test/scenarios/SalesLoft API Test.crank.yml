@@ -1,0 +1,16 @@
+scenario: SalesLoft API Test
+description: This test the creation and validation of field in SalesLoft.
+
+steps:
+- step: create or update a Salesloft person
+  data:
+    person:
+        email_address: gene@thisisjust.atomatest.com
+        first_name: Gene
+        last_name: Freecs
+        NicksTest123: kjfghkjf
+- step: Validate that the email_address field on salesloft person gene@thisisjust.atomatest.com should be gene@thisisjust.atomatest.com
+- step: Validate that the first_name field on SalesLoft person gene@thisisjust.atomatest.com should be Gene
+- step: Validate that the last_name field on SalesLoft person gene@thisisjust.atomatest.com should be Freecs
+- step: Validate that the NicksTest123 field on SalesLoft person gene@thisisjust.atomatest.com should be kjfghkjf
+- step: Delete the gene@thisisjust.atomatest.com SalesLoft person.

@@ -1,0 +1,31 @@
+scenario: Creation of Lead from Web and validation of fields in SalesLoft
+description: This test does the Lead creation from Web and validates fields in SalesLoft
+
+tokens:
+  test:
+    email: ftsalesloft@thisisjust.atomatest.com
+    lastname: Woods
+    firstname: John
+    company: Yeah corp
+    title: Executive
+    country: United States
+    submit: button[type=submit]
+    salesterritory: North America
+  
+steps:
+- step: Navigate to http://go.automatoninc.com/Automatest-Live-Demo_Demo-Page-New-2019-Updated.html
+- step: Fill out input[id=Email] with {{test.email}}
+- step: Fill out input[id=Company] with {{test.company}}
+- step: Fill out input[id=LastName] with {{test.lastname}}
+- step: Fill out input[id=FirstName] with {{test.firstname}}
+- step: Fill out select[id=Title] with {{test.title}}
+- step: Fill out select[id=Country] with {{test.country}}
+- step: Submit the form by clicking {{test.submit}}
+- waitFor: 300
+  step: Validate that the email_address field on salesloft person {{test.email}} should be {{test.email}}
+- step: Validate that the first_name field on salesloft person {{test.email}} should be {{test.firstname}}
+- step: Validate that the last_name field on salesloft person {{test.email}} should be {{test.lastname}}
+- waitFor: 150
+  step: Delete the {{test.email}} Marketo lead. 
+- step: Delete the {{test.email}} Salesforce lead.
+- step: Delete the {{test.email}} Salesloft person.

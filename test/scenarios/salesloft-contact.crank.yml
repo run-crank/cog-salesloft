@@ -1,0 +1,13 @@
+scenario: SalesLoft Person
+description: This tests the creation and deletion of a salesloft person
+
+steps:
+- step: create or update a salesloft person
+  data:
+    person:
+        email_address: salesloft@thisisjust.atomatest.com
+        first_name: Gene
+        last_name: Reykjavik
+- step: the email_address field on salesloft person salesloft@thisisjust.atomatest.com should be salesloft@thisisjust.atomatest.com
+- step: the last_name field on salesloft person salesloft@thisisjust.atomatest.com should be Reykjavik
+- step: delete the salesloft@thisisjust.atomatest.com salesloft person
