@@ -3,7 +3,7 @@ description: This test does the Lead creation from Web and validates fields in S
 
 tokens:
   test:
-    email: ftsalesloft@ys.com
+    email: ftsalesloft@thisisjust.atomatest.com
     lastname: Woods
     firstname: John
     company: Yeah corp
