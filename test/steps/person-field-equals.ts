@@ -27,7 +27,7 @@ describe('PersonFieldEquals', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('PersonFieldEqualsStep');
       expect(stepDef.getName()).to.equal('Check a field on a SalesLoft Person');
-      expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should be (?<expectation>.+)');
+      expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectation>.+)');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
     });
 
@@ -45,9 +45,13 @@ describe('PersonFieldEquals', () => {
       expect(fields[1].optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
       expect(fields[1].type).to.equal(FieldDefinition.Type.STRING);
 
-      expect(fields[2].key).to.equal('expectation');
-      expect(fields[2].optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
-      expect(fields[2].type).to.equal(FieldDefinition.Type.ANYSCALAR);
+      expect(fields[2].key).to.equal('operator');
+      expect(fields[2].optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
+      expect(fields[2].type).to.equal(FieldDefinition.Type.STRING);
+
+      expect(fields[3].key).to.equal('expectation');
+      expect(fields[3].optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
+      expect(fields[3].type).to.equal(FieldDefinition.Type.ANYSCALAR);
     });
   });
 
@@ -120,6 +124,29 @@ describe('PersonFieldEquals', () => {
         const foundPerson = {
           id: 1,
           email_address: 'salesloft@test.com',
+          custom_fields: {
+            MyCustomField: 'custom data',
+          },
+        };
+        beforeEach(() => {
+          protoStep.setData(Struct.fromJavaScript({
+            email: 'salesloft@test.com',
+            field: 'email_address',
+            expectation: 'wrong expectation',
+          }));
+          clientWrapperStub.findPersonByEmail.returns(Promise.resolve([foundPerson]));
+        });
+
+        it('should respond with failed', async () => {
+          const response = await stepUnderTest.executeStep(protoStep);
+          expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
+        });
+      });
+
+      describe('Actual does not have field expected', () => {
+        const foundPerson = {
+          id: 1,
+          not_email_address: 'salesloft@test.com',
           custom_fields: {
             MyCustomField: 'custom data',
           },
