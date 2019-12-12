@@ -2,6 +2,8 @@
 
 import { BaseStep, Field, StepInterface } from '../core/base-step';
 import { Step, FieldDefinition, StepDefinition } from '../proto/cog_pb';
+import * as util from '@run-crank/utilities';
+import { baseOperators } from '../client/constants/operators';
 
 export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
 
@@ -63,7 +65,13 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
         ]);
       }
     } catch (e) {
-      return this.error('There was an error loading the person from SalesLoft: %s', [e.toString()]);
+      if (e instanceof util.UnknownOperatorError) {
+        return this.error('%s Please provide one of: %s', [e.message, baseOperators.join(', ')]);
+      }
+      if (e instanceof util.InvalidOperandError) {
+        return this.error(e.message);
+      }
+      return this.error('There was an error during validation of lead field: %s', [e.message]);
     }
   }
 
