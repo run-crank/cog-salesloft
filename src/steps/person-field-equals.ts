@@ -71,7 +71,7 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
       if (e instanceof util.InvalidOperandError) {
         return this.error(e.message);
       }
-      return this.error('There was an error during validation of lead field: %s', [e.message]);
+      return this.error('There was an error checking the person field: %s', [e.message]);
     }
   }
 
