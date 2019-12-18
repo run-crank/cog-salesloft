@@ -55,7 +55,7 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
       }
 
       // tslint:disable-next-line:triple-equals
-      if (actual == expectation) {
+      if (this.compare(operator, actual, expectation)) {
         return this.pass(this.operatorSuccessMessages[operator], [field, expectation]);
       } else {
         return this.fail(this.operatorFailMessages[operator], [
