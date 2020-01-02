@@ -104,6 +104,7 @@ describe('PersonFieldEquals', () => {
           custom_fields: {
             MyCustomField: 'custom data',
           },
+          age: 25,
         };
         beforeEach(() => {
           protoStep.setData(Struct.fromJavaScript({
@@ -117,6 +118,30 @@ describe('PersonFieldEquals', () => {
         it('should respond with pass', async () => {
           const response = await stepUnderTest.executeStep(protoStep);
           expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+        });
+
+        it('should respond with error when invalid operator is passed', async () => {
+          protoStep.setData(Struct.fromJavaScript({
+            email: 'salesloft@test.com',
+            field: 'email_address',
+            expectation: 'salesloft@test.com',
+            operator: 'invalid operator',
+          }));
+
+          const response = await stepUnderTest.executeStep(protoStep);
+          expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+        });
+
+        it('should respond with error when expected and actual values have different types and compared', async () => {
+          protoStep.setData(Struct.fromJavaScript({
+            email: 'salesloft@test.com',
+            field: 'age',
+            expectation: 'nonNumeric',
+            operator: 'be greater than',
+          }));
+
+          const response = await stepUnderTest.executeStep(protoStep);
+          expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
         });
       });
 
@@ -166,7 +191,7 @@ describe('PersonFieldEquals', () => {
         });
       });
 
-      describe('Erorr', () => {
+      describe('Error', () => {
         beforeEach(() => {
           clientWrapperStub.findPersonByEmail.throws();
         });
