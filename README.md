@@ -49,7 +49,7 @@ Scenario files.
 | --- | --- | --- |
 | **Create or update a SalesLoft person**<br>(`CreateOrUpdatePersonStep`) | `create or update a salesloft person` | - `person`: A map of field names to field values |
 | **Delete a SalesLoft person**<br>(`DeletePersonStep`) | `delete the (?<email>.+) salesloft person` | - `email`: Person's email address |
-| **Check a field on a SalesLoft Person**<br>(`PersonFieldEqualsStep`) | `the (?<field>[a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should be (?<expectation>.+)` | - `email`: Person's email address <br><br>- `field`: Field name to check <br><br>- `expectation`: Expected field value |
+| **Check a field on a SalesLoft Person**<br>(`PersonFieldEqualsStep`) | `the (?<field>[a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectation>.+)` | - `email`: Person's email address <br><br>- `field`: Field name to check <br><br>- `operator`: Check Logic (be, not be, contain, not contain, be greater than, or be less than) <br><br>- `expectation`: Expected field value |
 <!-- stepDetailsEnd -->
 
 ## Development and Contributing
