@@ -4,8 +4,8 @@ import { default as sinon } from 'ts-sinon';
 import * as sinonChai from 'sinon-chai';
 import 'mocha';
 
-import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse } from '../../src/proto/cog_pb';
-import { Step } from '../../src/steps/person-create-or-update';
+import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse } from '../../../src/proto/cog_pb';
+import { Step } from '../../../src/steps/person/person-create-or-update';
 
 chai.use(sinonChai);
 
