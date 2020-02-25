@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
-import { BaseStep, Field, StepInterface } from '../../core/base-step';
-import { Step, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
+import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 
 export class DeletePersonStep extends BaseStep implements StepInterface {
 
@@ -13,6 +13,17 @@ export class DeletePersonStep extends BaseStep implements StepInterface {
     field: 'email',
     type: FieldDefinition.Type.EMAIL,
     description: 'Person\'s email address',
+  }];
+
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'person',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'id',
+      type: FieldDefinition.Type.STRING,
+      description: "Person's SalesLoft ID",
+    }],
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step) {
@@ -28,10 +39,14 @@ export class DeletePersonStep extends BaseStep implements StepInterface {
         ]);
       }
 
-      await this.client.deletePerson(person['id']);
-      return this.pass('Successfully deleted SalesLoft person %s.', [
-        email,
-      ]);
+      await this.client.deletePerson(person.id);
+
+      const record = this.keyValue('person', 'Deleted Person', { id: person.id });
+      return this.pass(
+        'Successfully deleted SalesLoft person %s.',
+        [email],
+        [record],
+      );
     } catch (e) {
       return this.error('There was an error deleting the person in SalesLoft: %s.', [
         e.toString(),

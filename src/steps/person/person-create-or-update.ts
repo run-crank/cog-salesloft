@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
-import { BaseStep, Field, StepInterface } from '../../core/base-step';
-import { Step, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
+import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 
 export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface {
 
@@ -13,6 +13,16 @@ export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface 
     field: 'person',
     type: FieldDefinition.Type.MAP,
     description: 'A map of field names to field values',
+  }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'person',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'id',
+      type: FieldDefinition.Type.STRING,
+      description: "Person's SalesLoft ID",
+    }],
+    dynamicFields: true,
   }];
 
   private personStandardWriteableFields: string[] = [
@@ -63,23 +73,29 @@ export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface 
 
     try {
       const existingPerson = (await this.client.findPersonByEmail(payload['email_address']))[0];
+      let response;
+      let record;
 
       if (!existingPerson) {
-        await this.client.createPerson(payload);
+        response = await this.client.createPerson(payload);
+        record = this.keyValue('person', 'Created Person', { id: response.id });
       } else {
-        await this.client.updatePerson(existingPerson['id'], payload);
+        response = await this.client.updatePerson(existingPerson.id, payload);
+        record = this.keyValue('person', 'Updated Person', { id: response.id });
       }
 
-      return this.pass('Successfully created or updated SalesLoft person %s.', [
-        payload['email_address'],
-      ]);
+      return this.pass(
+        'Successfully created or updated SalesLoft person %s.',
+        [payload['email_address']],
+        [record],
+      );
     } catch (e) {
-      return this.error('There was an error creating or updating the person in SalesLoft: %s.', [
-        e.toString(),
-      ]);
+      return this.error(
+        'There was an error creating or updating the person in SalesLoft: %s.',
+        [e.toString()],
+      );
     }
   }
-
 }
 
 export { CreateOrUpdatePersonStep as Step };
