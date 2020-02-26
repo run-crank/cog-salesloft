@@ -19,8 +19,10 @@ describe('CreateOrUpdatePersonStep', () => {
     protoStep = new ProtoStep();
     clientWrapperStub = sinon.stub();
     clientWrapperStub.findPersonByEmail = sinon.stub();
-    clientWrapperStub.createPerson = sinon.spy();
-    clientWrapperStub.updatePerson = sinon.spy();
+    clientWrapperStub.createPerson = sinon.stub();
+    clientWrapperStub.createPerson.returns(Promise.resolve({ id: 322 }));
+    clientWrapperStub.updatePerson = sinon.stub();
+    clientWrapperStub.updatePerson.returns(Promise.resolve({ id: 322 }));
     stepUnderTest = new Step(clientWrapperStub);
   });
 
@@ -69,18 +71,12 @@ describe('CreateOrUpdatePersonStep', () => {
         protoStep.setData(Struct.fromJavaScript({
           person: expectedParameters,
         }));
-        clientWrapperStub.findPersonByEmail.returns(Promise.resolve([]));
+        clientWrapperStub.findPersonByEmail.returns(Promise.resolve([{}]));
       });
 
       it('should respond with pass', async () => {
         const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
         expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
-      });
-
-      it('should call createPerson with expected parameters', async () => {
-        await stepUnderTest.executeStep(protoStep);
-        expect(clientWrapperStub.createPerson).to.have.been.calledWith(
-          Object.assign(expectedParameters, { custom_fields: {} }));
       });
     });
 

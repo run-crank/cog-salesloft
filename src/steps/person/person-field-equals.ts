@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
-import { BaseStep, Field, StepInterface } from '../../core/base-step';
-import { Step, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
+import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 
@@ -29,6 +29,24 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
     type: FieldDefinition.Type.ANYSCALAR,
     description: 'Expected field value',
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'person',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'id',
+      type: FieldDefinition.Type.NUMERIC,
+      description: "Person's SalesLoft ID",
+    }, {
+      field: 'created_at',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Person's SalesLoft Created At",
+    }, {
+      field: 'updated_at',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Person's SalesLoft Updated At",
+    }],
+    dynamicFields: true,
+  }];
 
   async executeStep(step: Step) {
     const stepData: any = step.getData() ? step.getData().toJavaScript() : {};
@@ -48,15 +66,20 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
 
       const actual = (person[field] === undefined ? person['custom_fields'][field] : person[field]) || null;
 
-      // tslint:disable-next-line:triple-equals
+      const record = this.createRecord(person);
+
       if (this.compare(operator, actual, expectation)) {
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectation]);
+        return this.pass(
+          this.operatorSuccessMessages[operator],
+          [field, expectation],
+          [record],
+        );
       } else {
-        return this.fail(this.operatorFailMessages[operator], [
-          field,
-          expectation,
-          actual,
-        ]);
+        return this.fail(
+          this.operatorFailMessages[operator],
+          [field, expectation, actual],
+          [record],
+        );
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -69,6 +92,25 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
     }
   }
 
+  createRecord(person: Record<string, any>) {
+    const record = {};
+
+    //// Handle non-object and non-array. Ensure that we only get custom_fields
+    Object.keys(person).forEach((key) => {
+      if (typeof person[key] !== 'object') {
+        record[key] = person[key];
+      }
+    });
+
+    //// Handle Custom Fields
+    if (person['custom_fields']) {
+      Object.keys(person['custom_fields']).forEach((key) => {
+        record[key] = person['custom_fields'][key];
+      });
+    }
+
+    return this.keyValue('person', 'Checked Person', record);
+  }
 }
 
 export { PersonFieldEqualsStep as Step };
