@@ -36,8 +36,16 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
     type: RecordDefinition.Type.KEYVALUE,
     fields: [{
       field: 'id',
-      type: FieldDefinition.Type.STRING,
+      type: FieldDefinition.Type.NUMERIC,
       description: "Person's SalesLoft ID",
+    }, {
+      field: 'created_at',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Person's SalesLoft Created At",
+    }, {
+      field: 'updated_at',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Person's SalesLoft Updated At",
     }],
     dynamicFields: true,
   }];
