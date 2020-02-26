@@ -56,7 +56,6 @@
   },
   "dependencies": {
     "@run-crank/utilities": "^0.1.4",
-    "flat": "^5.0.0",
     "google-protobuf": "^3.8.0",
     "grpc": "^1.21.1",
     "moment": "^2.24.0",

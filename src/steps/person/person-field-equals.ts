@@ -5,8 +5,6 @@ import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../p
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 
-import { flatten } from 'flat';
-
 export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check a field on a SalesLoft Person';
@@ -75,7 +73,7 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
         );
       }
 
-      const record = this.keyValue('person', 'Checked Person', flatten(person));
+      const record = this.createRecord(person);
 
       if (this.compare(operator, actual, expectation)) {
         return this.pass(
@@ -101,6 +99,25 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
     }
   }
 
+  createRecord(person: Record<string, any>) {
+    const record = {};
+
+    //// Handle non-object and non-array. Ensure that we only get custom_fields
+    Object.keys(person).forEach((key) => {
+      if (typeof person[key] !== 'object') {
+        record[key] = person[key];
+      }
+    });
+
+    //// Handle Custom Fields
+    if (person['custom_fields']) {
+      Object.keys(person['custom_fields']).forEach((key) => {
+        record[key] = person['custom_fields'][key];
+      });
+    }
+
+    return this.keyValue('person', 'Checked Person', record);
+  }
 }
 
 export { PersonFieldEqualsStep as Step };
