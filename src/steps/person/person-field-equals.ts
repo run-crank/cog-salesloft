@@ -9,7 +9,7 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check a field on a SalesLoft Person';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectation>.+)';
+  protected stepExpression: string = 'the (?<field>[ a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectation>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'email',
@@ -64,14 +64,7 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
         ]);
       }
 
-      const actual = person[field] === undefined ? person['custom_fields'][field] : person[field];
-
-      if (!actual) {
-        return this.fail(
-          'The %s field was not found',
-          [field],
-        );
-      }
+      const actual = (person[field] === undefined ? person['custom_fields'][field] : person[field]) || null;
 
       const record = this.createRecord(person);
 
@@ -84,7 +77,7 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
       } else {
         return this.fail(
           this.operatorFailMessages[operator],
-          [field, expectation, person[field]],
+          [field, expectation, actual],
           [record],
         );
       }
