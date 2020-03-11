@@ -64,7 +64,8 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
         ]);
       }
 
-      const actual = (person[field] === undefined ? person['custom_fields'][field] : person[field]) || null;
+      let actual = person[field] === undefined ? person['custom_fields'][field] : person[field];
+      actual = actual === undefined ? null : actual;
 
       const record = this.createRecord(person);
 
