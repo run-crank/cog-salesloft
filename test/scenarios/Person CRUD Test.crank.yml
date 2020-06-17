@@ -11,7 +11,7 @@ steps:
       last_name: Freecs
       NicksTest123: kjfghkjf
 - step: Then the email_address field on SalesLoft Person gene@thisisjust.atomatest.com should be gene@thisisjust.atomatest.com
-- step: And the first_name field on SalesLoft Person gene@thisisjust.atomatest.com should be Gene
-- step: And the last_name field on SalesLoft Person gene@thisisjust.atomatest.com should be Freecs
+- step: And the first_name field on SalesLoft Person gene@thisisjust.atomatest.com should be set
+- step: And the last_name field on SalesLoft Person gene@thisisjust.atomatest.com should be one of Freecs
 - step: And the NicksTest123 field on SalesLoft Person gene@thisisjust.atomatest.com should be kjfghkjf
 - step: Finally, delete the gene@thisisjust.atomatest.com SalesLoft Person.

@@ -9,7 +9,7 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check a field on a SalesLoft Person';
   // tslint:disable-next-line:max-line-length
-  protected stepExpression: string = 'the (?<field>[ a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectation>.+)';
+  protected stepExpression: string = 'the (?<field>[ a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should (?<operator>be set|not be set|be less than|be greater than|be one of|be|contain|not be one of|not be|not contain) ?(?<expectation>.+)?';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'email',
@@ -23,11 +23,12 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
     field: 'operator',
     type: FieldDefinition.Type.STRING,
     optionality: FieldDefinition.Optionality.OPTIONAL,
-    description: 'Check Logic (be, not be, contain, not contain, be greater than, or be less than)',
+    description: 'Check Logic (be, not be, contain, not contain, be greater than, be less than, be set, not be set, be one of, or not be one of)',
   }, {
     field: 'expectation',
     type: FieldDefinition.Type.ANYSCALAR,
     description: 'Expected field value',
+    optionality: FieldDefinition.Optionality.OPTIONAL,
   }];
   protected expectedRecords: ExpectedRecord[] = [{
     id: 'person',
@@ -68,20 +69,11 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
       actual = actual === undefined ? null : actual;
 
       const record = this.createRecord(person);
+      const result = this.assert(operator, actual, expectation, field);
 
-      if (this.compare(operator, actual, expectation)) {
-        return this.pass(
-          this.operatorSuccessMessages[operator],
-          [field, expectation],
-          [record],
-        );
-      } else {
-        return this.fail(
-          this.operatorFailMessages[operator],
-          [field, expectation, actual],
-          [record],
-        );
-      }
+      return result.valid ? this.pass(result.message, [], [record])
+        : this.fail(result.message, [], [record]);
+
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
         return this.error('%s Please provide one of: %s', [e.message, baseOperators.join(', ')]);
