@@ -4,6 +4,7 @@ import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-
 import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
+import { isNullOrUndefined } from 'util';
 
 export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
 
@@ -55,6 +56,10 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
     const email = stepData.email;
     const field = stepData.field;
     const operator: string = stepData.operator || 'be';
+
+    if (isNullOrUndefined(expectation) && !(operator == 'be set' || operator == 'not be set')) {
+      return this.error("The operator '%s' requires an expected value. Please provide one.", [operator]);
+    }
 
     try {
       const person = (await this.client.findPersonByEmail(email))[0];
