@@ -65,7 +65,7 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
       const person = (await this.client.findPersonByEmail(email))[0];
 
       if (!person) {
-        return this.error('Person %s not found.', [
+        return this.fail('Person %s not found.', [
           email,
         ]);
       }
