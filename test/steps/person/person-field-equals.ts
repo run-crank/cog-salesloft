@@ -66,9 +66,9 @@ describe('PersonFieldEquals', () => {
         clientWrapperStub.findPersonByEmail.returns(Promise.resolve([]));
       });
 
-      it('should respond with error', async () => {
+      it('should respond with fail', async () => {
         const response = await stepUnderTest.executeStep(protoStep);
-        expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+        expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
       });
     });
 
