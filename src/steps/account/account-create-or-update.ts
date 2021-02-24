@@ -80,7 +80,6 @@ export class CreateOrUpdateAccountStep extends BaseStep implements StepInterface
       const existingPerson = (await this.client.findAccountByDomain(payload['domain'])).find(account => account['name'] === payload['name']);
       let response;
       let record;
-      console.log(payload);
       if (!existingPerson) {
         response = await this.client.createAccount(payload);
         record = this.keyValue('account', 'Created Account', { id: response.id });
