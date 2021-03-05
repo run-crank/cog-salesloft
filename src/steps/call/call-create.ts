@@ -54,6 +54,12 @@ export class CreateCallStep extends BaseStep implements StepInterface {
     // Get the person by email to get the personId
     const person = (await this.client.findPersonByEmail(email))[0];
 
+    if (!person) {
+      return this.error("There are no person found with email '%s'.", [
+        email,
+      ]);
+    }
+
     const payload = {
       person_id: person.id,
       sentiment: stepData.sentiment,

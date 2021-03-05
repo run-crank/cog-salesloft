@@ -80,6 +80,12 @@ export class CrmActivityFieldEqualsStep extends BaseStep implements StepInterfac
       // Get the person by email to get the personId
       const person = (await this.client.findPersonByEmail(email))[0];
 
+      if (!person) {
+        return this.error("There are no person found with email '%s'.", [
+          email,
+        ]);
+      }
+
       // Filter out by personId and source
       const filteredActivities = activities.filter(activity => activity['person'].id === person.id && activity['activity_type'] === source);
 
@@ -99,7 +105,6 @@ export class CrmActivityFieldEqualsStep extends BaseStep implements StepInterfac
         }
       });
 
-      console.log(validResults);
       if (validResults.length === 0) {
         return this.fail("There were no valid activities logged for source '%s' with %s %s %s.", [
           source,
