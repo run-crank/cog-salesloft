@@ -81,7 +81,7 @@ export class CrmActivityFieldEqualsStep extends BaseStep implements StepInterfac
       const person = (await this.client.findPersonByEmail(email))[0];
 
       if (!person) {
-        return this.error("There are no person found with email '%s'.", [
+        return this.fail('Person %s not found.', [
           email,
         ]);
       }

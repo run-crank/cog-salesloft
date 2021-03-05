@@ -55,7 +55,7 @@ export class CreateCallStep extends BaseStep implements StepInterface {
     const person = (await this.client.findPersonByEmail(email))[0];
 
     if (!person) {
-      return this.error("There are no person found with email '%s'.", [
+      return this.fail('Person %s not found.', [
         email,
       ]);
     }
