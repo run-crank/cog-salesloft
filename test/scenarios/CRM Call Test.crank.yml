@@ -1,0 +1,19 @@
+scenario: Call Validation Test
+description: >
+  Tests the creation, and validation of SalesLoft Calls Activity.
+
+steps:
+- step: When I create or update a SalesLoft Person
+  data:
+    person:
+      email_address: forCallTesting@thisisjust.atomatest.com
+      first_name: Geralt
+      last_name: Rivers
+- step: When I create a SalesLoft call
+  data:
+    email: forCallTesting@thisisjust.atomatest.com
+    disposition: Connected
+    sentiment: Customer
+    notes: This is a test note
+- step: the description field on a record from phone source logged from forCallTesting@thisisjust.atomatest.com should be This is a test note
+- step: Finally, delete the forCallTesting@thisisjust.atomatest.com SalesLoft Person.
