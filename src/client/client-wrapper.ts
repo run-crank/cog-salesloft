@@ -2,7 +2,7 @@ import * as grpc from 'grpc';
 import * as salesloft from 'salesloft';
 import { Field } from '../core/base-step';
 import { FieldDefinition } from '../proto/cog_pb';
-import { PersonAwareMixin, AccountAwareMixin } from './mixins';
+import { PersonAwareMixin, AccountAwareMixin, CallAwareMixin, CrmActivityAwareMixin } from './mixins';
 
 class ClientWrapper {
   public static expectedAuthFields: Field[] = [{
@@ -18,8 +18,8 @@ class ClientWrapper {
   }
 }
 
-interface ClientWrapper extends PersonAwareMixin, AccountAwareMixin {}
-applyMixins(ClientWrapper, [PersonAwareMixin, AccountAwareMixin]);
+interface ClientWrapper extends PersonAwareMixin, AccountAwareMixin, CallAwareMixin, CrmActivityAwareMixin {}
+applyMixins(ClientWrapper, [PersonAwareMixin, AccountAwareMixin, CallAwareMixin, CrmActivityAwareMixin]);
 
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
   baseCtors.forEach((baseCtor) => {

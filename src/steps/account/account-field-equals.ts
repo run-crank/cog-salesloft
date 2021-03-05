@@ -15,7 +15,7 @@ export class AccountFieldEqualsStep extends BaseStep implements StepInterface {
   protected expectedFields: Field[] = [{
     field: 'name',
     type: FieldDefinition.Type.STRING,
-    description: "Account's name address",
+    description: "Account's name",
   }, {
     field: 'domain',
     type: FieldDefinition.Type.STRING,
