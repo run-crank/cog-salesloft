@@ -11,7 +11,7 @@ export class CreateCallStep extends BaseStep implements StepInterface {
 
   protected expectedFields: Field[] = [{
     field: 'email',
-    type: FieldDefinition.Type.STRING,
+    type: FieldDefinition.Type.EMAIL,
     description: "Person's email address whom the CRM activity will be logged to",
   }, {
     field: 'disposition',
