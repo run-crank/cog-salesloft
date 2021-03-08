@@ -19,7 +19,7 @@ export class CrmActivityFieldEqualsStep extends BaseStep implements StepInterfac
   },
   {
     field: 'email',
-    type: FieldDefinition.Type.STRING,
+    type: FieldDefinition.Type.EMAIL,
     description: "Person's email address whom the CRM activity is logged",
   }, {
     field: 'field',
@@ -68,21 +68,20 @@ export class CrmActivityFieldEqualsStep extends BaseStep implements StepInterfac
     }
 
     try {
+      // Get the person by email to get the personId
+      const person = (await this.client.findPersonByEmail(email))[0];
+      if (!person) {
+        return this.fail('Person %s not found.', [
+          email,
+        ]);
+      }
+
       // Get all activities by source
       const activities = await this.client.getAllCrmActivites();
 
       if (activities.length === 0) {
         return this.fail("No activities logged for source '%s'.", [
           source,
-        ]);
-      }
-
-      // Get the person by email to get the personId
-      const person = (await this.client.findPersonByEmail(email))[0];
-
-      if (!person) {
-        return this.fail('Person %s not found.', [
-          email,
         ]);
       }
 
@@ -104,7 +103,6 @@ export class CrmActivityFieldEqualsStep extends BaseStep implements StepInterfac
           result = assertResult;
         }
       });
-
       if (validResults.length === 0) {
         return this.fail("There were no valid activities logged for source '%s' with %s %s %s.", [
           source,
