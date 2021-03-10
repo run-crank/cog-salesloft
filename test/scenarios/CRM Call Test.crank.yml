@@ -10,7 +10,7 @@ steps:
       first_name: Geralt
       last_name: Rivers
       person_company_name: TestCompany
-- step: When I create a SalesLoft call
+- step: When I create a SalesLoft activity
   data:
     email: forCallTesting@thisisjust.atomatest.com
     disposition: Connected
