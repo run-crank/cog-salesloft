@@ -9,6 +9,7 @@ steps:
       email_address: forCallTesting@thisisjust.atomatest.com
       first_name: Geralt
       last_name: Rivers
+      person_company_name: TestCompany
 - step: When I create a SalesLoft call
   data:
     email: forCallTesting@thisisjust.atomatest.com

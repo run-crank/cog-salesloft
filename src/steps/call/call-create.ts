@@ -3,10 +3,10 @@
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
 import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 
-export class CreateCallStep extends BaseStep implements StepInterface {
+export class CreateActivityStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Create a SalesLoft call';
-  protected stepExpression: string = 'create a salesloft call';
+  protected stepName: string = 'Create a SalesLoft Activity';
+  protected stepExpression: string = 'create a salesloft activity';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
 
   protected expectedFields: Field[] = [{
@@ -89,4 +89,4 @@ export class CreateCallStep extends BaseStep implements StepInterface {
   }
 }
 
-export { CreateCallStep as Step };
+export { CreateActivityStep as Step };

@@ -6,16 +6,16 @@ import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { isNullOrUndefined } from 'util';
 
-export class CrmActivityFieldEqualsStep extends BaseStep implements StepInterface {
+export class ActivityFieldEqualsStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Check a field on a CRM Activity';
+  protected stepName: string = 'Check a field on a Salesloft Activity';
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'the (?<field>[ a-zA-Z0-9_-]+) field on a record from (?<source>.+) source logged from (?<email>.+) should (?<operator>be set|not be set|be less than|be greater than|be one of|be|contain|not be one of|not be|not contain) ?(?<expectation>.+)?';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'source',
     type: FieldDefinition.Type.STRING,
-    description: "CRM Activity's source",
+    description: "Activity's source",
   },
   {
     field: 'email',
@@ -148,4 +148,4 @@ export class CrmActivityFieldEqualsStep extends BaseStep implements StepInterfac
   }
 }
 
-export { CrmActivityFieldEqualsStep as Step };
+export { ActivityFieldEqualsStep as Step };

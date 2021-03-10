@@ -27,9 +27,9 @@ describe('CreateCallStep', () => {
   describe('Metadata', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
-      expect(stepDef.getStepId()).to.equal('CreateCallStep');
-      expect(stepDef.getName()).to.equal('Create a SalesLoft call');
-      expect(stepDef.getExpression()).to.equal('create a salesloft call');
+      expect(stepDef.getStepId()).to.equal('CreateActivityStep');
+      expect(stepDef.getName()).to.equal('Create a SalesLoft Activity');
+      expect(stepDef.getExpression()).to.equal('create a salesloft activity');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     });
 
