@@ -63,7 +63,6 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
 
     try {
       const person = (await this.client.findPersonByEmail(email))[0];
-
       if (!person) {
         return this.fail('Person %s not found.', [
           email,
@@ -74,6 +73,12 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
       actual = actual === undefined ? null : actual;
 
       const record = this.createRecord(person);
+
+      if (!person.hasOwnProperty(stepData.field) && !person['custom_fields'].hasOwnProperty(stepData.field)) {
+        // If the given field does not exist on the account, return an error.
+        return this.fail('The %s field does not exist on Person %s', [field, email], [record]);
+      }
+
       const result = this.assert(operator, actual, expectation, field);
 
       return result.valid ? this.pass(result.message, [], [record])
