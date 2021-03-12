@@ -56,6 +56,8 @@ export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface 
     'person_company_industry',
     'job_seniority',
     'do_not_contact',
+    'do_not_call',
+    'do_not_email',
     'locale',
     'personal_website',
     'twitter_handle',
