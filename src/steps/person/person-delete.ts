@@ -47,7 +47,7 @@ export class DeletePersonStep extends BaseStep implements StepInterface {
         ]);
       }
 
-      await this.client.deletePerson(person.id);
+      await this.client.deletePerson(person.id, email);
 
       const record = this.keyValue('person', 'Deleted Person', { id: person.id });
       return this.pass(

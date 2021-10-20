@@ -53,7 +53,7 @@ export class DeleteAccountStep extends BaseStep implements StepInterface {
         ]);
       }
 
-      await this.client.deleteAccount(account.id);
+      await this.client.deleteAccount(account.id, domain);
 
       const record = this.keyValue('account', 'Deleted Account', { id: account.id });
       return this.pass(

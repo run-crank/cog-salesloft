@@ -66,26 +66,33 @@ describe('Cog:RunStep', () => {
   let grpcUnaryCall: any = {};
   let cogUnderTest: Cog;
   let clientWrapperStub: any;
+  const redisClient: any = '';
+  const requestId: string = '1';
+  const scenarioId: string = '2';
+  const requestorId: string = '3';
 
   beforeEach(() => {
     protoStep = new ProtoStep();
     grpcUnaryCall.request = {
       getStep: function () {return protoStep},
+      getRequestId () { return requestId; },
+      getScenarioId () { return scenarioId; },
+      getRequestorId () { return requestorId; },
       metadata: null
     };
     clientWrapperStub = sinon.stub();
     cogUnderTest = new Cog(clientWrapperStub);
   });
 
-  it('authenticates client wrapper with call metadata', (done) => {
+  it('bypasses caching with bad redisUrl', (done) => {
     // Construct grpc metadata and assert the client was authenticated.
     grpcUnaryCall.metadata = new Metadata();
     grpcUnaryCall.metadata.add('anythingReally', 'some-value');
 
     cogUnderTest.runStep(grpcUnaryCall, (err, response: RunStepResponse) => {
-      expect(clientWrapperStub).to.have.been.calledWith(grpcUnaryCall.metadata);
+      expect(clientWrapperStub).to.have.not.been.called;
       done();
-    })
+    }).catch(done);
   });
 
   it('responds with error when called with unknown stepId', (done) => {
@@ -152,7 +159,7 @@ describe('Cog:RunSteps', () => {
     cogUnderTest = new Cog(clientWrapperStub);
   });
 
-  it('authenticates client wrapper with call metadata', () => {
+  it('bypasses caching with bad redisUrl', () => {
     runStepRequest.setStep(protoStep);
 
     // Construct grpc metadata and assert the client was authenticated.
@@ -160,11 +167,7 @@ describe('Cog:RunSteps', () => {
 
     cogUnderTest.runSteps(grpcDuplexStream);
     grpcDuplexStream.emit('data', runStepRequest);
-    expect(clientWrapperStub).to.have.been.calledWith(grpcDuplexStream.metadata);
-
-    // Does not attempt to reinstantiate client.
-    grpcDuplexStream.emit('data', runStepRequest);
-    return expect(clientWrapperStub).to.have.been.calledOnce;
+    expect(clientWrapperStub).to.have.not.been.called;
 });
 
   it('responds with error when called with unknown stepId', (done) => {
