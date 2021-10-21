@@ -256,7 +256,6 @@ describe('CachingClientWrapper', () => {
 
     setTimeout(() => {
       expect(redisClientStub.setex).to.have.been.calledWith('expectedKey', 600, '"expectedValue"');
-      // expect(redisClientStub.setex).to.have.been.calledWith('testPrefix', 600, '["expectedKey"]');
       done();
     });
   });
