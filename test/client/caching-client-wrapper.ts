@@ -98,11 +98,11 @@ describe('CachingClientWrapper', () => {
       state: 'SC'
     }
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
-    cachingClientWrapperUnderTest.delCache = sinon.spy();
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.createPerson(personRequest);
 
     setTimeout(() => {
-      expect(cachingClientWrapperUnderTest.delCache).to.have.been.called;
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.createPerson).to.have.been.calledWith(personRequest);
       done();
     });
@@ -118,11 +118,11 @@ describe('CachingClientWrapper', () => {
     }
     const expectedId = 123;
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
-    cachingClientWrapperUnderTest.delCache = sinon.spy();
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.updatePerson(expectedId, personRequest);
 
     setTimeout(() => {
-      expect(cachingClientWrapperUnderTest.delCache).to.have.been.called;
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.updatePerson).to.have.been.calledWith(expectedId, personRequest);
       done();
     });
@@ -179,11 +179,11 @@ describe('CachingClientWrapper', () => {
       state: 'Indiana'
     }
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
-    cachingClientWrapperUnderTest.delCache = sinon.spy();
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.createAccount(accountRequest);
 
     setTimeout(() => {
-      expect(cachingClientWrapperUnderTest.delCache).to.have.been.called;
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.createAccount).to.have.been.calledWith(accountRequest);
       done();
     });
@@ -199,11 +199,11 @@ describe('CachingClientWrapper', () => {
     }
     const expectedId = 123;
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
-    cachingClientWrapperUnderTest.delCache = sinon.spy();
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.updateAccount(expectedId, accountRequest);
 
     setTimeout(() => {
-      expect(cachingClientWrapperUnderTest.delCache).to.have.been.called;
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.updateAccount).to.have.been.calledWith(expectedId, accountRequest);
       done();
     });
@@ -218,9 +218,11 @@ describe('CachingClientWrapper', () => {
       crm_params: {}
     };
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.createCall(callRequest);
 
     setTimeout(() => {
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.createCall).to.have.been.calledWith(callRequest);
       done();
     });
@@ -256,6 +258,7 @@ describe('CachingClientWrapper', () => {
 
     setTimeout(() => {
       expect(redisClientStub.setex).to.have.been.calledWith('expectedKey', 600, '"expectedValue"');
+      expect(redisClientStub.setex).to.have.been.calledWith('testPrefix', 600, '["expectedKey"]');
       done();
     });
   });
@@ -267,6 +270,21 @@ describe('CachingClientWrapper', () => {
 
     setTimeout(() => {
       expect(redisClientStub.del).to.have.been.calledWith('expectedKey');
+      done();
+    });
+  });
+
+  it('clearCache', (done) => {
+    redisClientStub.del = sinon.stub().yields();
+    cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
+    cachingClientWrapperUnderTest.cachePrefix = 'testPrefix';
+    cachingClientWrapperUnderTest.getCache = sinon.stub().returns(['testKey1', 'testKey2'])
+    cachingClientWrapperUnderTest.clearCache();
+
+    setTimeout(() => {
+      expect(redisClientStub.del).to.have.been.calledWith('testKey1');
+      expect(redisClientStub.del).to.have.been.calledWith('testKey2');
+      expect(redisClientStub.setex).to.have.been.calledWith('testPrefix');
       done();
     });
   });
