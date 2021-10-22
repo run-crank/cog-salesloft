@@ -31,14 +31,12 @@ class CachingClientWrapper {
   }
 
   public async createAccount(account: AccountRequest) {
-    const domainName = account['domain'];
-    await this.delCache(`${this.cachePrefix}Account${domainName}`);
+    await this.clearCache();
     return await this.client.createAccount(account);
   }
 
   public async updateAccount(id: number, account: AccountRequest) {
-    const domainName = account['domain'];
-    await this.delCache(`${this.cachePrefix}Account${domainName}`);
+    await this.clearCache();
     return this.client.updateAccount(id, account);
   }
 
@@ -65,14 +63,12 @@ class CachingClientWrapper {
   }
 
   public async createPerson(person: PersonRequest) {
-    const email = person['email_address'];
-    await this.delCache(`${this.cachePrefix}Person${email}`);
+    await this.clearCache();
     return await this.client.createPerson(person);
   }
 
   public async updatePerson(id: number, person: PersonRequest) {
-    const email = person['email_address'];
-    await this.delCache(`${this.cachePrefix}Person${email}`);
+    await this.clearCache();
     return this.client.updatePerson(id, person);
   }
 
@@ -81,12 +77,16 @@ class CachingClientWrapper {
     return this.client.deletePerson(id);
   }
 
-  // all non-cached methods, just referencing the original function
+  // Call aware methods
   // -------------------------------------------------------------------
 
   public async createCall(call: CallRequest) {
+    await this.clearCache();
     return await this.client.createCall(call);
   }
+
+  // all non-cached methods, just referencing the original function
+  // -------------------------------------------------------------------
 
   public async getAllCrmActivites() {
     return await this.client.getAllCrmActivites();
@@ -114,7 +114,11 @@ class CachingClientWrapper {
 
   public async setCache(key: string, value: any) {
     try {
+      // arrOfKeys will store an array of all cache keys used in this scenario run, so it can be cleared easily
+      const arrOfKeys = await this.getCache(this.cachePrefix) || [];
+      arrOfKeys.push(key);
       await this.setAsync(key, 600, JSON.stringify(value));
+      await this.setAsync(this.cachePrefix, 600, JSON.stringify(arrOfKeys));
     } catch (err) {
       console.log(err);
     }
@@ -123,6 +127,23 @@ class CachingClientWrapper {
   public async delCache(key: string) {
     try {
       await this.delAsync(key);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  public async clearCache() {
+    try {
+      // clears all the cachekeys used in this scenario run
+      const keysToDelete = await this.getCache(this.cachePrefix) || [];
+      // get the keys from Salesforce
+      const salesforceKeys = await this.getCache(`${this.cachePrefix.slice(0, -9)}Salesforce`) || [];
+      keysToDelete.push(...salesforceKeys);
+      if (keysToDelete.length) {
+        keysToDelete.forEach((key: string) => this.delAsync(key));
+      }
+      await this.setAsync(this.cachePrefix, 600, '[]');
+      await this.setAsync(`${this.cachePrefix.slice(0, -9)}Salesforce`, 600, '[]');
     } catch (err) {
       console.log(err);
     }
