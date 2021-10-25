@@ -79,11 +79,11 @@ describe('CachingClientWrapper', () => {
     const expectedEmail = 'test@example.com';
     const expectedId = 123;
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
-    cachingClientWrapperUnderTest.delCache = sinon.spy();
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.deletePerson(expectedId, expectedEmail);
 
     setTimeout(() => {
-      expect(cachingClientWrapperUnderTest.delCache).to.have.been.called;
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.deletePerson).to.have.been.calledWith(expectedId);
       done();
     });
@@ -160,11 +160,11 @@ describe('CachingClientWrapper', () => {
     const expectedId = 123;
     const expectedDomain = 'example.com';
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
-    cachingClientWrapperUnderTest.delCache = sinon.spy();
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.deleteAccount(expectedId, expectedDomain);
 
     setTimeout(() => {
-      expect(cachingClientWrapperUnderTest.delCache).to.have.been.called;
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.deleteAccount).to.have.been.calledWith(expectedId);
       done();
     });
@@ -258,7 +258,7 @@ describe('CachingClientWrapper', () => {
 
     setTimeout(() => {
       expect(redisClientStub.setex).to.have.been.calledWith('expectedKey', 600, '"expectedValue"');
-      expect(redisClientStub.setex).to.have.been.calledWith('testPrefix', 600, '["expectedKey"]');
+      expect(redisClientStub.setex).to.have.been.calledWith('cachekeys|testPrefix', 600, '["expectedKey"]');
       done();
     });
   });
@@ -284,7 +284,7 @@ describe('CachingClientWrapper', () => {
     setTimeout(() => {
       expect(redisClientStub.del).to.have.been.calledWith('testKey1');
       expect(redisClientStub.del).to.have.been.calledWith('testKey2');
-      expect(redisClientStub.setex).to.have.been.calledWith('testPrefix');
+      expect(redisClientStub.setex).to.have.been.calledWith('cachekeys|testPrefix');
       done();
     });
   });
