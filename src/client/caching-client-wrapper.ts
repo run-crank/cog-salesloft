@@ -6,7 +6,7 @@ import { CallRequest } from 'salesloft/dist/resources/Calls';
 ​​
 class CachingClientWrapper {
   // cachePrefix is scoped to the specific scenario, request, and requestor
-  public cachePrefix = `${this.idMap.requestId}${this.idMap.scenarioId}${this.idMap.requestorId}Salesloft`;
+  public cachePrefix = `${this.idMap.scenarioId}${this.idMap.requestorId}`;
 
   constructor(private client: ClientWrapper, public redisClient: any, public idMap: any) {
     this.redisClient = redisClient;
@@ -17,7 +17,7 @@ class CachingClientWrapper {
   // -------------------------------------------------------------------
 
   public async findAccountByDomain(domainName: string) {
-    const cachekey = `${this.cachePrefix}Account${domainName}`;
+    const cachekey = `Salesloft|Account|${domainName}|${this.cachePrefix}`;
     const stored = await this.getCache(cachekey);
     if (stored) {
       return stored;
@@ -40,8 +40,8 @@ class CachingClientWrapper {
     return this.client.updateAccount(id, account);
   }
 
-  public async deleteAccount(id: number, domainName: string) {
-    await this.delCache(`${this.cachePrefix}Account${domainName}`);
+  public async deleteAccount(id: number, domainName: string = null) {
+    await this.clearCache();
     return this.client.deleteAccount(id);
   }
 
@@ -49,7 +49,7 @@ class CachingClientWrapper {
   // -------------------------------------------------------------------
 
   public async findPersonByEmail(email: string) {
-    const cachekey = `${this.cachePrefix}Person${email}`;
+    const cachekey = `Salesloft|Person|${email}|${this.cachePrefix}`;
     const stored = await this.getCache(cachekey);
     if (stored) {
       return stored;
@@ -72,8 +72,8 @@ class CachingClientWrapper {
     return this.client.updatePerson(id, person);
   }
 
-  public async deletePerson(id: number, email: string) {
-    await this.delCache(`${this.cachePrefix}Person${email}`);
+  public async deletePerson(id: number, email: string = null) {
+    await this.clearCache();
     return this.client.deletePerson(id);
   }
 
@@ -115,10 +115,10 @@ class CachingClientWrapper {
   public async setCache(key: string, value: any) {
     try {
       // arrOfKeys will store an array of all cache keys used in this scenario run, so it can be cleared easily
-      const arrOfKeys = await this.getCache(this.cachePrefix) || [];
+      const arrOfKeys = await this.getCache(`cachekeys|${this.cachePrefix}`) || [];
       arrOfKeys.push(key);
       await this.setAsync(key, 600, JSON.stringify(value));
-      await this.setAsync(this.cachePrefix, 600, JSON.stringify(arrOfKeys));
+      await this.setAsync(`cachekeys|${this.cachePrefix}`, 600, JSON.stringify(arrOfKeys));
     } catch (err) {
       console.log(err);
     }
@@ -135,15 +135,11 @@ class CachingClientWrapper {
   public async clearCache() {
     try {
       // clears all the cachekeys used in this scenario run
-      const keysToDelete = await this.getCache(this.cachePrefix) || [];
-      // get the keys from Salesforce
-      const salesforceKeys = await this.getCache(`${this.cachePrefix.slice(0, -9)}Salesforce`) || [];
-      keysToDelete.push(...salesforceKeys);
+      const keysToDelete = await this.getCache(`cachekeys|${this.cachePrefix}`) || [];
       if (keysToDelete.length) {
-        keysToDelete.forEach((key: string) => this.delAsync(key));
+        keysToDelete.forEach(async (key: string) => await this.delAsync(key));
       }
-      await this.setAsync(this.cachePrefix, 600, '[]');
-      await this.setAsync(`${this.cachePrefix.slice(0, -9)}Salesforce`, 600, '[]');
+      await this.setAsync(`cachekeys|${this.cachePrefix}`, 600, '[]');
     } catch (err) {
       console.log(err);
     }
