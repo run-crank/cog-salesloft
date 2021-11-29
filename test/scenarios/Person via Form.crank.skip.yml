@@ -1,5 +1,5 @@
-scenario: Creation of Lead from Web and validation of fields in SalesLoft
-description: This test does the Lead creation from Web and validates fields in SalesLoft
+scenario: Creation of Lead from Web and validation of fields in Salesloft
+description: This test does the Lead creation from Web and validates fields in Salesloft
 
 tokens:
   test:

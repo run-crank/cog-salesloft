@@ -42,15 +42,15 @@ export class ActivityFieldEqualsStep extends BaseStep implements StepInterface {
     fields: [{
       field: 'id',
       type: FieldDefinition.Type.NUMERIC,
-      description: "CRM Activity's SalesLoft ID",
+      description: "CRM Activity's Salesloft ID",
     }, {
       field: 'created_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "CRM Activity's SalesLoft Created At",
+      description: "CRM Activity's Salesloft Created At",
     }, {
       field: 'updated_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "CRM Activity's SalesLoft Updated At",
+      description: "CRM Activity's Salesloft Updated At",
     }],
     dynamicFields: true,
   }];

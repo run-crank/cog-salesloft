@@ -5,7 +5,7 @@ import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../p
 
 export class DeleteAccountStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Delete a SalesLoft account';
+  protected stepName: string = 'Delete a Salesloft account';
   protected stepExpression: string = 'delete the (?<name>.+) salesloft account from (?<domain>.+) domain';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
 
@@ -25,15 +25,15 @@ export class DeleteAccountStep extends BaseStep implements StepInterface {
     fields: [{
       field: 'id',
       type: FieldDefinition.Type.NUMERIC,
-      description: "Account's SalesLoft ID",
+      description: "Account's Salesloft ID",
     }, {
       field: 'created_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "Account's SalesLoft Created At",
+      description: "Account's Salesloft Created At",
     }, {
       field: 'updated_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "Account's SalesLoft Updated At",
+      description: "Account's Salesloft Updated At",
     }],
     dynamicFields: true,
   }];
@@ -57,12 +57,12 @@ export class DeleteAccountStep extends BaseStep implements StepInterface {
 
       const record = this.keyValue('account', 'Deleted Account', { id: account.id });
       return this.pass(
-        'Successfully deleted SalesLoft account %s.',
+        'Successfully deleted Salesloft account %s.',
         [name],
         [record],
       );
     } catch (e) {
-      return this.error('There was an error deleting the account in SalesLoft: %s.', [
+      return this.error('There was an error deleting the account in Salesloft: %s.', [
         e.toString(),
       ]);
     }

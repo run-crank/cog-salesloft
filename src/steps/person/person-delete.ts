@@ -5,7 +5,7 @@ import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../p
 
 export class DeletePersonStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Delete a SalesLoft person';
+  protected stepName: string = 'Delete a Salesloft person';
   protected stepExpression: string = 'delete the (?<email>.+) salesloft person';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
 
@@ -21,15 +21,15 @@ export class DeletePersonStep extends BaseStep implements StepInterface {
     fields: [{
       field: 'id',
       type: FieldDefinition.Type.NUMERIC,
-      description: "Person's SalesLoft ID",
+      description: "Person's Salesloft ID",
     }, {
       field: 'created_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "Person's SalesLoft Created At",
+      description: "Person's Salesloft Created At",
     }, {
       field: 'updated_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "Person's SalesLoft Updated At",
+      description: "Person's Salesloft Updated At",
     }],
     dynamicFields: true,
   }];
@@ -51,12 +51,12 @@ export class DeletePersonStep extends BaseStep implements StepInterface {
 
       const record = this.keyValue('person', 'Deleted Person', { id: person.id });
       return this.pass(
-        'Successfully deleted SalesLoft person %s.',
+        'Successfully deleted Salesloft person %s.',
         [email],
         [record],
       );
     } catch (e) {
-      return this.error('There was an error deleting the person in SalesLoft: %s.', [
+      return this.error('There was an error deleting the person in Salesloft: %s.', [
         e.toString(),
       ]);
     }

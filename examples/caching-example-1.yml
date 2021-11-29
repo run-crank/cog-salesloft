@@ -1,9 +1,9 @@
 scenario: Account CRUD Test
 description: >
-  Tests the creation, validation, and deletion of SalesLoft Account objects.
+  Tests the creation, validation, and deletion of Salesloft Account objects.
 
 steps:
-- step: When I create or update a SalesLoft Account
+- step: When I create or update a Salesloft Account
   data:
     account:
       name: 'Gene Freecs'
@@ -11,11 +11,11 @@ steps:
       city: Gary
       state: Indiana
       country: USA
-- step: Then the name field on SalesLoft Account Gene Freecs from thisisatest.com domain should be Gene Freecs
-- step: Then the city field on SalesLoft Account Gene Freecs from thisisatest.com domain should be Gary
-- step: Then the state field on SalesLoft Account Gene Freecs from thisisatest.com domain should be Indiana
-- step: Then the country field on SalesLoft Account Gene Freecs from thisisatest.com domain should be USA
-- step: When I create or update a SalesLoft Person
+- step: Then the name field on Salesloft Account Gene Freecs from thisisatest.com domain should be Gene Freecs
+- step: Then the city field on Salesloft Account Gene Freecs from thisisatest.com domain should be Gary
+- step: Then the state field on Salesloft Account Gene Freecs from thisisatest.com domain should be Indiana
+- step: Then the country field on Salesloft Account Gene Freecs from thisisatest.com domain should be USA
+- step: When I create or update a Salesloft Person
   data:
     person:
       email_address: gene@thisisjust.atomatest.com
@@ -23,17 +23,17 @@ steps:
       last_name: Freecs
       person_company_name: Automaton
       state: SC
-- step: Then the email_address field on SalesLoft Person gene@thisisjust.atomatest.com should be gene@thisisjust.atomatest.com
-- step: And the first_name field on SalesLoft Person gene@thisisjust.atomatest.com should be set
-- step: And the last_name field on SalesLoft Person gene@thisisjust.atomatest.com should be one of Freecs
-- step: And the person_company_name field on SalesLoft Person gene@thisisjust.atomatest.com should be one of Automaton
-- step: And the state field on SalesLoft Person gene@thisisjust.atomatest.com should be one of SC
-- step: When I create a SalesLoft activity
+- step: Then the email_address field on Salesloft Person gene@thisisjust.atomatest.com should be gene@thisisjust.atomatest.com
+- step: And the first_name field on Salesloft Person gene@thisisjust.atomatest.com should be set
+- step: And the last_name field on Salesloft Person gene@thisisjust.atomatest.com should be one of Freecs
+- step: And the person_company_name field on Salesloft Person gene@thisisjust.atomatest.com should be one of Automaton
+- step: And the state field on Salesloft Person gene@thisisjust.atomatest.com should be one of SC
+- step: When I create a Salesloft activity
   data:
     email: gene@thisisjust.atomatest.com
     disposition: Connected
     sentiment: Customer
     notes: This is a test note
 - step: the description field on a record from phone source logged from gene@thisisjust.atomatest.com should be This is a test note
-- step: Then delete the gene@thisisjust.atomatest.com SalesLoft Person.
-- step: Finally, delete the Gene Freecs SalesLoft Account from thisisatest.com domain.
+- step: Then delete the gene@thisisjust.atomatest.com Salesloft Person.
+- step: Finally, delete the Gene Freecs Salesloft Account from thisisatest.com domain.

@@ -5,7 +5,7 @@ import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../p
 
 export class CreateActivityStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Create a SalesLoft Activity';
+  protected stepName: string = 'Create a Salesloft Activity';
   protected stepExpression: string = 'create a salesloft activity';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
 
@@ -32,15 +32,15 @@ export class CreateActivityStep extends BaseStep implements StepInterface {
     fields: [{
       field: 'id',
       type: FieldDefinition.Type.NUMERIC,
-      description: "Call's SalesLoft ID",
+      description: "Call's Salesloft ID",
     }, {
       field: 'created_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "Call's SalesLoft Created At",
+      description: "Call's Salesloft Created At",
     }, {
       field: 'updated_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "Call's SalesLoft Updated At",
+      description: "Call's Salesloft Updated At",
     }],
     dynamicFields: true,
   }];
@@ -76,13 +76,13 @@ export class CreateActivityStep extends BaseStep implements StepInterface {
       record = this.keyValue('call', 'Created Call', { id: response.id });
 
       return this.pass(
-        'Successfully created SalesLoft call %s with disposition %s and segment %s.',
+        'Successfully created Salesloft call %s with disposition %s and segment %s.',
         [email, disposition, sentiment],
         [record],
       );
     } catch (e) {
       return this.error(
-        'There was an error creating the call in SalesLoft: %s.',
+        'There was an error creating the call in Salesloft: %s.',
         [e.toString()],
       );
     }

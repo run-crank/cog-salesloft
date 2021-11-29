@@ -5,7 +5,7 @@ import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../p
 
 export class CreateOrUpdateAccountStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Create or update a SalesLoft account';
+  protected stepName: string = 'Create or update a Salesloft account';
   protected stepExpression: string = 'create or update a salesloft account';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
 
@@ -20,15 +20,15 @@ export class CreateOrUpdateAccountStep extends BaseStep implements StepInterface
     fields: [{
       field: 'id',
       type: FieldDefinition.Type.NUMERIC,
-      description: "Account's SalesLoft ID",
+      description: "Account's Salesloft ID",
     }, {
       field: 'created_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "Account's SalesLoft Created At",
+      description: "Account's Salesloft Created At",
     }, {
       field: 'updated_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "Account's SalesLoft Updated At",
+      description: "Account's Salesloft Updated At",
     }],
     dynamicFields: true,
   }];
@@ -89,13 +89,13 @@ export class CreateOrUpdateAccountStep extends BaseStep implements StepInterface
       }
 
       return this.pass(
-        'Successfully created or updated SalesLoft account %s.',
+        'Successfully created or updated Salesloft account %s.',
         [payload['name']],
         [record],
       );
     } catch (e) {
       return this.error(
-        'There was an error creating or updating the account in SalesLoft: %s.',
+        'There was an error creating or updating the account in Salesloft: %s.',
         [e.toString()],
       );
     }

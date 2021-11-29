@@ -8,7 +8,7 @@ import { isNullOrUndefined } from 'util';
 
 export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Check a field on a SalesLoft Person';
+  protected stepName: string = 'Check a field on a Salesloft Person';
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'the (?<field>[ a-zA-Z0-9_-]+) field on salesloft person (?<email>.+) should (?<operator>be set|not be set|be less than|be greater than|be one of|be|contain|not be one of|not be|not contain|match|not match) ?(?<expectation>.+)?';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
@@ -37,15 +37,15 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
     fields: [{
       field: 'id',
       type: FieldDefinition.Type.NUMERIC,
-      description: "Person's SalesLoft ID",
+      description: "Person's Salesloft ID",
     }, {
       field: 'created_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "Person's SalesLoft Created At",
+      description: "Person's Salesloft Created At",
     }, {
       field: 'updated_at',
       type: FieldDefinition.Type.DATETIME,
-      description: "Person's SalesLoft Updated At",
+      description: "Person's Salesloft Updated At",
     }],
     dynamicFields: true,
   }];
