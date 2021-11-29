@@ -1,12 +1,12 @@
 scenario: Account CRUD Test
 description: >
-  Tests the creation, validation, and deletion of SalesLoft Account objects.
+  Tests the creation, validation, and deletion of Salesloft Account objects.
 
 steps:
-- step: When I create or update a SalesLoft Account
+- step: When I create or update a Salesloft Account
   data:
     account:
       name: 'Gene Freecs'
       domain: salesloft.com
-- step: Then the name field on SalesLoft Account Gene Freecs from salesloft.com domain should be Gene Freecs
-- step: Finally, delete the Gene Freecs SalesLoft Account from salesloft.com domain.
+- step: Then the name field on Salesloft Account Gene Freecs from salesloft.com domain should be Gene Freecs
+- step: Finally, delete the Gene Freecs Salesloft Account from salesloft.com domain.

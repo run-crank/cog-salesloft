@@ -27,7 +27,7 @@ describe('DeleteAccountStep', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('DeleteAccountStep');
-      expect(stepDef.getName()).to.equal('Delete a SalesLoft account');
+      expect(stepDef.getName()).to.equal('Delete a Salesloft account');
       expect(stepDef.getExpression()).to.equal('delete the (?<name>.+) salesloft account from (?<domain>.+) domain');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     });

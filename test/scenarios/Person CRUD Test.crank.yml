@@ -1,17 +1,17 @@
 scenario: Person CRUD Test
 description: >
-  Tests the creation, validation, and deletion of SalesLoft Person objects.
+  Tests the creation, validation, and deletion of Salesloft Person objects.
 
 steps:
-- step: When I create or update a SalesLoft Person
+- step: When I create or update a Salesloft Person
   data:
     person:
       email_address: gene@thisisjust.atomatest.com
       first_name: Gene
       last_name: Freecs
       NicksTest123: kjfghkjf
-- step: Then the email_address field on SalesLoft Person gene@thisisjust.atomatest.com should be gene@thisisjust.atomatest.com
-- step: And the first_name field on SalesLoft Person gene@thisisjust.atomatest.com should be set
-- step: And the last_name field on SalesLoft Person gene@thisisjust.atomatest.com should be one of Freecs
-- step: And the NicksTest123 field on SalesLoft Person gene@thisisjust.atomatest.com should be kjfghkjf
-- step: Finally, delete the gene@thisisjust.atomatest.com SalesLoft Person.
+- step: Then the email_address field on Salesloft Person gene@thisisjust.atomatest.com should be gene@thisisjust.atomatest.com
+- step: And the first_name field on Salesloft Person gene@thisisjust.atomatest.com should be set
+- step: And the last_name field on Salesloft Person gene@thisisjust.atomatest.com should be one of Freecs
+- step: And the NicksTest123 field on Salesloft Person gene@thisisjust.atomatest.com should be kjfghkjf
+- step: Finally, delete the gene@thisisjust.atomatest.com Salesloft Person.
