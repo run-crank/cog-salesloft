@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 
 export class CreateOrUpdateAccountStep extends BaseStep implements StepInterface {
 
@@ -77,21 +77,25 @@ export class CreateOrUpdateAccountStep extends BaseStep implements StepInterface
     });
 
     try {
-      const existingPerson = (await this.client.findAccountByDomain(payload['domain'])).find(account => account['name'] === payload['name']);
+      const existingAccount = (await this.client.findAccountByDomain(payload['domain'])).find(account => account['name'] === payload['name']);
       let response;
       let record;
-      if (!existingPerson) {
+      let orderedRecord;
+
+      if (!existingAccount) {
         response = await this.client.createAccount(payload);
-        record = this.keyValue('account', 'Created Account', { id: response.id });
+        record = this.createRecord(response);
+        orderedRecord = this.createOrderedRecord(response, stepData['__stepOrder']);
       } else {
-        response = await this.client.updateAccount(existingPerson.id, payload);
-        record = this.keyValue('account', 'Updated Account', { id: response.id });
+        response = await this.client.updateAccount(existingAccount.id, payload);
+        record = this.createRecord(response);
+        orderedRecord = this.createOrderedRecord(response, stepData['__stepOrder']);
       }
 
       return this.pass(
         'Successfully created or updated Salesloft account %s.',
         [payload['name']],
-        [record],
+        [record, orderedRecord],
       );
     } catch (e) {
       return this.error(
@@ -99,6 +103,14 @@ export class CreateOrUpdateAccountStep extends BaseStep implements StepInterface
         [e.toString()],
       );
     }
+  }
+
+  public createRecord(account): StepRecord {
+    return this.keyValue('account', 'Created or Updated Account', { id: account.id });
+  }
+
+  public createOrderedRecord(account, stepOrder = 1): StepRecord {
+    return this.keyValue(`account.${stepOrder}`, `Created or Updated Account from Step ${stepOrder}`, { id: account.id });
   }
 }
 
