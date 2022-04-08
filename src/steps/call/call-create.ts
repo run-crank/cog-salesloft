@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 
 export class CreateActivityStep extends BaseStep implements StepInterface {
 
@@ -71,14 +71,15 @@ export class CreateActivityStep extends BaseStep implements StepInterface {
     try {
       let response: any;
       let record: any;
+      let orderedRecord: any;
 
       response = await this.client.createCall(payload);
-      record = this.keyValue('call', 'Created Call', { id: response.id });
-
+      record = this.createRecord(response);
+      orderedRecord = this.createOrderedRecord(response, stepData['__stepOrder']);
       return this.pass(
         'Successfully created Salesloft call %s with disposition %s and segment %s.',
         [email, disposition, sentiment],
-        [record],
+        [record, orderedRecord],
       );
     } catch (e) {
       return this.error(
@@ -86,6 +87,14 @@ export class CreateActivityStep extends BaseStep implements StepInterface {
         [e.toString()],
       );
     }
+  }
+
+  public createRecord(call): StepRecord {
+    return this.keyValue('call', 'Created Call', { id: call.id });
+  }
+
+  public createOrderedRecord(call, stepOrder = 1): StepRecord {
+    return this.keyValue(`call.${stepOrder}`, `Created Call from Step ${stepOrder}`, { id: call.id });
   }
 }
 

@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 
 export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface {
 
@@ -85,19 +85,22 @@ export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface 
       const existingPerson = (await this.client.findPersonByEmail(payload['email_address']))[0];
       let response;
       let record;
+      let orderedRecord;
 
       if (!existingPerson) {
         response = await this.client.createPerson(payload);
-        record = this.keyValue('person', 'Created Person', { id: response.id });
+        record = this.createRecord(response);
+        orderedRecord = this.createOrderedRecord(response, stepData['__stepOrder']);
       } else {
         response = await this.client.updatePerson(existingPerson.id, payload);
-        record = this.keyValue('person', 'Updated Person', { id: response.id });
+        record = this.createRecord(response);
+        orderedRecord = this.createOrderedRecord(response, stepData['__stepOrder']);
       }
 
       return this.pass(
         'Successfully created or updated Salesloft person %s.',
         [payload['email_address']],
-        [record],
+        [record, orderedRecord],
       );
     } catch (e) {
       return this.error(
@@ -105,6 +108,14 @@ export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface 
         [e.toString()],
       );
     }
+  }
+
+  public createRecord(person): StepRecord {
+    return this.keyValue('person', 'Created or Updated Person', { id: person.id });
+  }
+
+  public createOrderedRecord(person, stepOrder = 1): StepRecord {
+    return this.keyValue(`person.${stepOrder}`, `Created or Updated Person from Step ${stepOrder}`, { id: person.id });
   }
 }
 
