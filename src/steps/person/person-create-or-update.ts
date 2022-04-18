@@ -121,7 +121,7 @@ export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface 
     const obj = {};
     Object.keys(person).forEach(key => obj[key] = person[key]);
     const record = this.keyValue(`person.${stepOrder}`, `Created or Updated Person from Step ${stepOrder}`, obj);
-    return record
+    return record;
   }
 }
 
