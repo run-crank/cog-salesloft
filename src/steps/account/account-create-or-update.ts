@@ -106,11 +106,17 @@ export class CreateOrUpdateAccountStep extends BaseStep implements StepInterface
   }
 
   public createRecord(account): StepRecord {
-    return this.keyValue('account', 'Created or Updated Account', { id: account.id });
+    const obj = {};
+    Object.keys(account).forEach(key => obj[key] = account[key]);
+    const record = this.keyValue('account', 'Created or Updated Account', obj);
+    return record;
   }
 
   public createOrderedRecord(account, stepOrder = 1): StepRecord {
-    return this.keyValue(`account.${stepOrder}`, `Created or Updated Account from Step ${stepOrder}`, { id: account.id });
+    const obj = {};
+    Object.keys(account).forEach(key => obj[key] = account[key]);
+    const record = this.keyValue(`account.${stepOrder}`, `Created or Updated Account from Step ${stepOrder}`, obj);
+    return record;
   }
 }
 
