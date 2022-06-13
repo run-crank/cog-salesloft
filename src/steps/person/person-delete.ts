@@ -5,7 +5,7 @@ import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../p
 
 export class DeletePersonStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Delete a Salesloft person';
+  protected stepName: string = 'Delete a Salesloft Person';
   protected stepExpression: string = 'delete the (?<email>.+) salesloft person';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
 

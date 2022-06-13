@@ -5,7 +5,7 @@ import { Step, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } f
 
 export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Create or update a Salesloft person';
+  protected stepName: string = 'Create or update a Salesloft Person';
   protected stepExpression: string = 'create or update a salesloft person';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
 
