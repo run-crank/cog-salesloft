@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { isNullOrUndefined } from 'util';
@@ -88,7 +88,7 @@ export class ActivityFieldEqualsStep extends BaseStep implements StepInterface {
       // Filter out by personId and source
       const filteredActivities = activities.filter(activity => activity['person'].id === person.id && activity['activity_type'] === source);
 
-      const record = this.createRecord(filteredActivities);
+      const records = this.createRecords(filteredActivities, stepData['__stepOrder']);
       const validResults = [];
       let result = {
         valid: false,
@@ -121,8 +121,8 @@ export class ActivityFieldEqualsStep extends BaseStep implements StepInterface {
         ]);
       }
 
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return result.valid ? this.pass(result.message, [], records)
+        : this.fail(result.message, [], records);
 
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -145,6 +145,23 @@ export class ActivityFieldEqualsStep extends BaseStep implements StepInterface {
     });
 
     return this.keyValue('crmActivity', 'Checked CRM Activity', record);
+  }
+
+  public createRecords(crmActivity, stepOrder = 1): StepRecord[] {
+    const obj = {};
+
+    Object.keys(crmActivity).forEach((key) => {
+      if (typeof crmActivity[key] !== 'object') {
+        obj[key] = crmActivity[key];
+      }
+    });
+
+    const records = [];
+    // Base Record
+    records.push(this.keyValue('crmActivity', 'Checked CRM Activity', obj));
+    // Ordered Record
+    records.push(this.keyValue(`crmActivity.${stepOrder}`, `Checked CRM Activity from Step ${stepOrder}`, obj));
+    return records;
   }
 }
 

@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { isNullOrUndefined } from 'util';
@@ -72,17 +72,17 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
       let actual = person[field] === undefined ? person['custom_fields'][field] : person[field];
       actual = actual === undefined ? null : actual;
 
-      const record = this.createRecord(person);
+      const records = this.createRecords(person, stepData['__stepOrder']);
 
       if (!person.hasOwnProperty(stepData.field) && !person['custom_fields'].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the account, return an error.
-        return this.fail('The %s field does not exist on Person %s', [field, email], [record]);
+        return this.fail('The %s field does not exist on Person %s', [field, email], records);
       }
 
       const result = this.assert(operator, actual, expectation, field);
 
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return result.valid ? this.pass(result.message, [], records)
+        : this.fail(result.message, [], records);
 
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -95,24 +95,29 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
     }
   }
 
-  createRecord(person: Record<string, any>) {
-    const record = {};
+  public createRecords(person, stepOrder = 1): StepRecord[] {
+    const obj = {};
 
     //// Handle non-object and non-array. Ensure that we only get custom_fields
     Object.keys(person).forEach((key) => {
       if (typeof person[key] !== 'object') {
-        record[key] = person[key];
+        obj[key] = person[key];
       }
     });
 
     //// Handle Custom Fields
     if (person['custom_fields']) {
       Object.keys(person['custom_fields']).forEach((key) => {
-        record[key] = person['custom_fields'][key];
+        obj[key] = person['custom_fields'][key];
       });
     }
 
-    return this.keyValue('person', 'Checked Person', record);
+    const records = [];
+    // Base Record
+    records.push(this.keyValue('person', 'Checked Account', obj));
+    // Ordered Record
+    records.push(this.keyValue(`person.${stepOrder}`, `Checked Account from Step ${stepOrder}`, obj));
+    return records;
   }
 }
 
