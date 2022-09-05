@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 
 export class PersonDiscover extends BaseStep implements StepInterface {
 
@@ -70,6 +70,31 @@ export class PersonDiscover extends BaseStep implements StepInterface {
     }
 
     return this.keyValue('discoverPerson', 'Discovered Person', record);
+  }
+
+  public createRecords(person, stepOrder = 1): StepRecord[] {
+    const obj = {};
+
+    //// Handle non-object and non-array. Ensure that we only get custom_fields
+    Object.keys(person).forEach((key) => {
+      if (typeof person[key] !== 'object') {
+        obj[key] = person[key];
+      }
+    });
+
+    //// Handle Custom Fields
+    if (person['custom_fields']) {
+      Object.keys(person['custom_fields']).forEach((key) => {
+        obj[key] = person['custom_fields'][key];
+      });
+    }
+
+    const records = [];
+    // Base Record
+    records.push(this.keyValue('discoverPerson', 'Discovered Person', obj));
+    // Ordered Record
+    records.push(this.keyValue(`discoverPerson.${stepOrder}`, `Discovered Person from Step ${stepOrder}`, obj));
+    return records;
   }
 }
 

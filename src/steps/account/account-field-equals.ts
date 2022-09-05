@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { isNullOrUndefined } from 'util';
@@ -79,11 +79,11 @@ export class AccountFieldEqualsStep extends BaseStep implements StepInterface {
       let actual = account[field] === undefined ? account['custom_fields'][field] : account[field];
       actual = actual === undefined ? null : actual;
 
-      const record = this.createRecord(account);
+      const records = this.createRecords(account, stepData['__stepOrder']);
       const result = this.assert(operator, actual, expectation, field);
 
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return result.valid ? this.pass(result.message, [], records)
+        : this.fail(result.message, [], records);
 
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -96,24 +96,29 @@ export class AccountFieldEqualsStep extends BaseStep implements StepInterface {
     }
   }
 
-  createRecord(account: Record<string, any>) {
-    const record = {};
+  public createRecords(account, stepOrder = 1): StepRecord[] {
+    const obj = {};
 
     //// Handle non-object and non-array. Ensure that we only get custom_fields
     Object.keys(account).forEach((key) => {
       if (typeof account[key] !== 'object') {
-        record[key] = account[key];
+        obj[key] = account[key];
       }
     });
 
     //// Handle Custom Fields
     if (account['custom_fields']) {
       Object.keys(account['custom_fields']).forEach((key) => {
-        record[key] = account['custom_fields'][key];
+        obj[key] = account['custom_fields'][key];
       });
     }
 
-    return this.keyValue('account', 'Checked Account', record);
+    const records = [];
+    // Base Record
+    records.push(this.keyValue('account', 'Checked Account', obj));
+    // Ordered Record
+    records.push(this.keyValue(`account.${stepOrder}`, `Checked Account from Step ${stepOrder}`, obj));
+    return records;
   }
 }
 
