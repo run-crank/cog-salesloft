@@ -79,7 +79,7 @@ export class PersonFieldEqualsStep extends BaseStep implements StepInterface {
         return this.fail('The %s field does not exist on Person %s', [field, email], records);
       }
 
-      const result = this.assert(operator, actual, expectation, field);
+      const result = this.assert(operator, actual, expectation, field, stepData['__piiSuppressionLevel']);
 
       return result.valid ? this.pass(result.message, [], records)
         : this.fail(result.message, [], records);

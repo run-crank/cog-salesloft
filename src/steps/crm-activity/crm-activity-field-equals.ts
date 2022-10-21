@@ -97,7 +97,7 @@ export class ActivityFieldEqualsStep extends BaseStep implements StepInterface {
 
       // Assert field
       filteredActivities.forEach((activity) => {
-        const assertResult = this.assert(operator, activity[field], expectation, field);
+        const assertResult = this.assert(operator, activity[field], expectation, field, stepData['__piiSuppressionLevel']);
         if (assertResult.valid) {
           validResults.push(activity);
           result = assertResult;
