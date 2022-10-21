@@ -80,7 +80,7 @@ export class AccountFieldEqualsStep extends BaseStep implements StepInterface {
       actual = actual === undefined ? null : actual;
 
       const records = this.createRecords(account, stepData['__stepOrder']);
-      const result = this.assert(operator, actual, expectation, field);
+      const result = this.assert(operator, actual, expectation, field, stepData['__piiSuppressionLevel']);
 
       return result.valid ? this.pass(result.message, [], records)
         : this.fail(result.message, [], records);
