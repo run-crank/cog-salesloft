@@ -6,7 +6,7 @@ import { CallRequest } from 'salesloft/dist/resources/Calls';
 ​​
 class CachingClientWrapper {
   // cachePrefix is scoped to the specific scenario, request, and requestor
-  public cachePrefix = `${this.idMap.scenarioId}${this.idMap.requestorId}`;
+  public cachePrefix = `${this.idMap.scenarioId}${this.idMap.requestorId}${this.idMap.connectionId}`;
 
   constructor(private client: ClientWrapper, public redisClient: any, public idMap: any) {
     this.redisClient = redisClient;
