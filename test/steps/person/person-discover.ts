@@ -26,7 +26,7 @@ describe('PersonFieldEquals', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('PersonDiscover');
-      expect(stepDef.getName()).to.equal('Discover fields on a Salesloft Person');
+      expect(stepDef.getName()).to.equal('Discover fields on a Salesloft person');
       expect(stepDef.getExpression()).to.equal('discover fields on salesloft person (?<email>.+)');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     });

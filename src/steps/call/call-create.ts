@@ -5,9 +5,11 @@ import { Step, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } f
 
 export class CreateActivityStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Create a Salesloft Activity';
+  protected stepName: string = 'Create a Salesloft activity';
   protected stepExpression: string = 'create a salesloft activity';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['create'];
+  protected targetObject: string = 'Activity';
 
   protected expectedFields: Field[] = [{
     field: 'email',

@@ -27,7 +27,7 @@ describe('ActivityFieldEquals', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('ActivityFieldEqualsStep');
-      expect(stepDef.getName()).to.equal('Check a field on a Salesloft Activity');
+      expect(stepDef.getName()).to.equal('Check a field on a Salesloft activity');
       expect(stepDef.getExpression()).to.equal('the (?<field>[ a-zA-Z0-9_-]+) field on a record from (?<source>.+) source logged from (?<email>.+) should (?<operator>be set|not be set|be less than|be greater than|be one of|be|contain|not be one of|not be|not contain|match|not match) ?(?<expectation>.+)?');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
     });
