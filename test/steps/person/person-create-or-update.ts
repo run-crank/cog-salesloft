@@ -30,7 +30,7 @@ describe('CreateOrUpdatePersonStep', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('CreateOrUpdatePersonStep');
-      expect(stepDef.getName()).to.equal('Create or update a Salesloft Person');
+      expect(stepDef.getName()).to.equal('Create or update a Salesloft person');
       expect(stepDef.getExpression()).to.equal('create or update a salesloft person');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     });

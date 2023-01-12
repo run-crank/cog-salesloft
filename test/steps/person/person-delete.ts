@@ -27,7 +27,7 @@ describe('DeletePersonStep', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('DeletePersonStep');
-      expect(stepDef.getName()).to.equal('Delete a Salesloft Person');
+      expect(stepDef.getName()).to.equal('Delete a Salesloft person');
       expect(stepDef.getExpression()).to.equal('delete the (?<email>.+) salesloft person');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     });

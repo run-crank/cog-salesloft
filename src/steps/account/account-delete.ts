@@ -8,6 +8,8 @@ export class DeleteAccountStep extends BaseStep implements StepInterface {
   protected stepName: string = 'Delete a Salesloft account';
   protected stepExpression: string = 'delete the (?<name>.+) salesloft account from (?<domain>.+) domain';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['delete'];
+  protected targetObject: string = 'Account';
 
   protected expectedFields: Field[] = [{
     field: 'name',

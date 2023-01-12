@@ -5,10 +5,12 @@ import { Step, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } f
 
 export class PersonDiscover extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Discover fields on a Salesloft Person';
+  protected stepName: string = 'Discover fields on a Salesloft person';
   // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'discover fields on salesloft person (?<email>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['discover'];
+  protected targetObject: string = 'Person';
   protected expectedFields: Field[] = [{
     field: 'email',
     type: FieldDefinition.Type.EMAIL,

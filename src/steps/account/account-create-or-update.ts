@@ -8,6 +8,8 @@ export class CreateOrUpdateAccountStep extends BaseStep implements StepInterface
   protected stepName: string = 'Create or update a Salesloft account';
   protected stepExpression: string = 'create or update a salesloft account';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['create', 'update'];
+  protected targetObject: string = 'Account';
 
   protected expectedFields: Field[] = [{
     field: 'account',
