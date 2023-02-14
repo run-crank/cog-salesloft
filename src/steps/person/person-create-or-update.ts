@@ -87,22 +87,25 @@ export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface 
       const existingPerson = (await this.client.findPersonByEmail(payload['email_address']))[0];
       let response;
       let record;
+      let passingRecord;
       let orderedRecord;
 
       if (!existingPerson) {
         response = await this.client.createPerson(payload);
         record = this.createRecord(response);
+        passingRecord = this.createPassingRecord(response, Object.keys(person));
         orderedRecord = this.createOrderedRecord(response, stepData['__stepOrder']);
       } else {
         response = await this.client.updatePerson(existingPerson.id, payload);
         record = this.createRecord(response);
+        passingRecord = this.createPassingRecord(response, Object.keys(person));
         orderedRecord = this.createOrderedRecord(response, stepData['__stepOrder']);
       }
 
       return this.pass(
         'Successfully created or updated Salesloft person %s.',
         [payload['email_address']],
-        [record, orderedRecord],
+        [record, passingRecord, orderedRecord],
       );
     } catch (e) {
       return this.error(
@@ -117,6 +120,21 @@ export class CreateOrUpdatePersonStep extends BaseStep implements StepInterface 
     Object.keys(person).forEach(key => obj[key] = person[key]);
     const record = this.keyValue('person', 'Created or Updated Person', obj);
     return record;
+  }
+
+  public createPassingRecord(data, fields): StepRecord {
+    const obj = {};
+    Object.keys(data).forEach(key => obj[key] = data[key]);
+
+    const filteredData = {};
+    if (obj) {
+      Object.keys(obj).forEach((key) => {
+        if (fields.includes(key)) {
+          filteredData[key] = obj[key];
+        }
+      });
+    }
+    return this.keyValue('exposeOnPass:person', 'Created or Updated Person', filteredData);
   }
 
   public createOrderedRecord(person, stepOrder = 1): StepRecord {

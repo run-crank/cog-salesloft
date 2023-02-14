@@ -82,22 +82,25 @@ export class CreateOrUpdateAccountStep extends BaseStep implements StepInterface
       const existingAccount = (await this.client.findAccountByDomain(payload['domain'])).find(account => account['name'] === payload['name']);
       let response;
       let record;
+      let passingRecord;
       let orderedRecord;
 
       if (!existingAccount) {
         response = await this.client.createAccount(payload);
         record = this.createRecord(response);
+        passingRecord = this.createPassingRecord(response, Object.keys(account));
         orderedRecord = this.createOrderedRecord(response, stepData['__stepOrder']);
       } else {
         response = await this.client.updateAccount(existingAccount.id, payload);
         record = this.createRecord(response);
+        passingRecord = this.createPassingRecord(response, Object.keys(account));
         orderedRecord = this.createOrderedRecord(response, stepData['__stepOrder']);
       }
 
       return this.pass(
         'Successfully created or updated Salesloft account %s.',
         [payload['name']],
-        [record, orderedRecord],
+        [record, passingRecord, orderedRecord],
       );
     } catch (e) {
       return this.error(
@@ -112,6 +115,21 @@ export class CreateOrUpdateAccountStep extends BaseStep implements StepInterface
     Object.keys(account).forEach(key => obj[key] = account[key]);
     const record = this.keyValue('account', 'Created or Updated Account', obj);
     return record;
+  }
+
+  public createPassingRecord(data, fields): StepRecord {
+    const obj = {};
+    Object.keys(data).forEach(key => obj[key] = data[key]);
+
+    const filteredData = {};
+    if (obj) {
+      Object.keys(obj).forEach((key) => {
+        if (fields.includes(key)) {
+          filteredData[key] = obj[key];
+        }
+      });
+    }
+    return this.keyValue('exposeOnPass:account', 'Created or Updated Account', filteredData);
   }
 
   public createOrderedRecord(account, stepOrder = 1): StepRecord {

@@ -73,15 +73,17 @@ export class CreateActivityStep extends BaseStep implements StepInterface {
     try {
       let response: any;
       let record: any;
+      let passingRecord: any;
       let orderedRecord: any;
 
       response = await this.client.createCall(payload);
       record = this.createRecord(response);
+      passingRecord = this.createPassingRecord(response);
       orderedRecord = this.createOrderedRecord(response, stepData['__stepOrder']);
       return this.pass(
         'Successfully created Salesloft call %s with disposition %s and segment %s.',
         [email, disposition, sentiment],
-        [record, orderedRecord],
+        [record, passingRecord, orderedRecord],
       );
     } catch (e) {
       return this.error(
@@ -93,6 +95,26 @@ export class CreateActivityStep extends BaseStep implements StepInterface {
 
   public createRecord(call): StepRecord {
     return this.keyValue('call', 'Created Call', { id: call.id });
+  }
+
+  public createPassingRecord(call): StepRecord {
+    const obj = {};
+    Object.keys(call).forEach(key => obj[key] = call[key]);
+
+    const fields = [
+      'id',
+      'disposition',
+      'sentiment',
+    ];
+    const filteredData = {};
+    if (obj) {
+      Object.keys(obj).forEach((key) => {
+        if (fields.includes(key)) {
+          filteredData[key] = obj[key];
+        }
+      });
+    }
+    return this.keyValue('exposeOnPass:call', 'Created Call', filteredData);
   }
 
   public createOrderedRecord(call, stepOrder = 1): StepRecord {
