@@ -4,19 +4,19 @@
   "description": "Salesloft Cog for use with Crank",
   "license": "MIT",
   "cog": {
-    "name": "automatoninc/salesloft",
+    "name": "stackmoxie/salesloft",
     "label": "Salesloft",
     "homepage": "https://github.com/run-crank/cog-salesloft",
     "authHelpUrl": "https://developers.salesloft.com/api.html#!/Topic/apikey"
   },
   "scripts": {
-    "build-docker": "docker build -t automatoninc/salesloft:$npm_package_version -t automatoninc/salesloft:latest .",
+    "build-docker": "docker build -t stackmoxie/salesloft:$npm_package_version -t stackmoxie/salesloft:latest .",
     "build-proto": "scripts/build-proto.sh",
     "build-ts": "tsc",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "start": "check-engine package.json && node -r ts-node/register src/core/grpc-server.ts",
     "test": "nyc mocha -r ts-node/register test/*.ts test/**/*.ts test/**/**/*.ts",
-    "version": "crank cog:readme automatoninc/salesloft && git add README.md"
+    "version": "crank cog:readme stackmoxie/salesloft && git add README.md"
   },
   "nyc": {
     "extension": [
